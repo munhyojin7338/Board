@@ -31,3 +31,21 @@ server:
 jwt:
   secret: VlwEyVBsYt9V7zq57TejMnVUyzblYcfPQye08f7MGVA9XkHa
 
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+cloud:
+  aws:
+    region:
+      static: ap-northeast-2
+    s3:
+      bucket: boardbuket
+
+    credentials:
+      access-key: AKIA4JILAKIDDFBCK3HM
+      secret-key:  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
+    stack:
+      auto: false
+
