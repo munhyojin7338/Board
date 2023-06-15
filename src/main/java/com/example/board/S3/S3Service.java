@@ -41,17 +41,6 @@ public class S3Service {
         return uploadFile(file, fileName);
     }
 
-    public String signup(MultipartFile file) throws IOException {
-        String fileName = UUID.randomUUID().toString().substring(0, 20);
-        return uploadFile(file, fileName);
-    }
-
-    public String update(MultipartFile file, String oldFileName) throws IOException {
-        delete(oldFileName);
-        String fileName = UUID.randomUUID().toString().substring(0, 20);
-        return uploadFile(file, fileName);
-    }
-
     public void delete(String fileName) {
         try {
             s3Config.amazonS3().deleteObject(bucket, fileName);

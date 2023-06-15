@@ -4,7 +4,6 @@ import com.example.board.memberController.entity.Member;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -32,6 +31,9 @@ public class Board {
     @Column(nullable = false)
     @Lob
     private String contents; // 게시글 내용
+
+    @Column
+    private String boardImageUrl; // 게시판 이미지 업로드 로직
 
     private LocalDateTime createDate;
 

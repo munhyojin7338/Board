@@ -39,15 +39,18 @@ public class Member implements UserDetails {
     @Column(nullable = false)
     private String phone;
 
-
     // 회원가입 날짜
     @Column
     private LocalDateTime localDateTime;
 
-
     // 회원 정보 수정한 날짜
     @Column
-    private LocalDateTime updateDate; // 회원정보 수정 날짜
+    private LocalDateTime updateDate;
+
+    // url 경로
+    @Column
+    private String imageUrl;
+
 
     @OneToMany(mappedBy = "member")
     private List<Board> boardList = new ArrayList<>();
