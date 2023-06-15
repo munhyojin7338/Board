@@ -1,0 +1,33 @@
+spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+    hidden-method:
+      filter:
+        enabled: true
+    view:
+      prefix: /WEB-INF/views/
+      suffix: .jsp
+    servlet:
+      jsp:
+        init-parameters:
+          development: true
+
+  datasource:
+    url: jdbc:mysql://springboot-db.carsvdpnndtv.ap-northeast-2.rds.amazonaws.com:3306/Board
+    username: root
+    password: akwldrk1
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate.format_sql: true
+      hibernate.show_sql: true
+server:
+  port: 8090
+
+jwt:
+  secret: VlwEyVBsYt9V7zq57TejMnVUyzblYcfPQye08f7MGVA9XkHa
+
