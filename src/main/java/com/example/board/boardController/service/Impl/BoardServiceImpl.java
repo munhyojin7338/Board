@@ -52,16 +52,12 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     @Transactional
-    /*
-    파라미터로 받은 member 와 category 의 id로 해당 Entity 를 찾고
-    생성 메소드를 통해 board 객체에 필요한 필드들을 set 한다.
-     */
-    public Long board(String nickName
+    public Long board(Long id
             , CategoryEnum category
             , String title
             , String contents) {
 
-        Member member = memberRepository.findByNickName(nickName)
+        Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 회원을 찾을 수 없습니다."));
 
         Board board = new Board();
@@ -70,7 +66,6 @@ public class BoardServiceImpl implements BoardService {
 
         return board.getId();
     }
-
 
 
     @Override

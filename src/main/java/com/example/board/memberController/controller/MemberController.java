@@ -1,5 +1,6 @@
 package com.example.board.memberController.controller;
 
+import com.example.board.S3.S3Service;
 import com.example.board.memberController.dto.MemberLoginRequestDto;
 import com.example.board.memberController.dto.MemberSignUpRequestDto;
 import com.example.board.memberController.dto.MemberUpdateNickNameDto;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -26,6 +28,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +42,8 @@ public class MemberController {
 
     private final LoginCheckService loginCheckService;
     private final MemberService memberService;
+
+    private final S3Service s3Service;
 
 
     @PostMapping("/signup")
@@ -131,7 +136,7 @@ public class MemberController {
         return ResponseEntity.ok(loginCheckService.checkEmail(email));
     }
 
-    // 닉네임 수정
+    // myPage 닉네임 수정
     @RequestMapping(value = "/updateNickName/{id}", method = {RequestMethod.PUT, RequestMethod.POST})
     public ResponseEntity<Member> updateMemberNickName(
             @PathVariable Long id,
@@ -151,6 +156,60 @@ public class MemberController {
         Member updatedMemberPassword = memberService.updatePassword(id, memberUpdatePasswordDto);
 
         return ResponseEntity.status(HttpStatus.OK).body(updatedMemberPassword);
+    }
+
+    // myPage 회원 프로필 이미지 업로드
+    @PostMapping("/upload/{id}")
+    public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file, @PathVariable Long id)
+            throws IOException  {
+       Member member = memberRepository.findById(id)
+               .orElseThrow(() -> new RuntimeException("회원 정보가 없습니다"));
+
+
+       String fileName = s3Service.upload(file);
+
+       member.setImageUrl(fileName);
+
+       memberRepository.save(member);
+
+       return ResponseEntity.ok().build();
+    }
+
+    /* myPage 회원 프로필 삭제
+    id라는 이름의 Long 타입 경로 변수를 받습니다.
+    memberRepository를 사용하여 주어진 id로 회원 정보를 조회합니다.
+    조회된 회원 정보가 없으면 예외를 발생시킵니다.
+    회원의 이미지 URL을 가져옵니다.
+    이미지 URL이 존재하면 (null이 아니고 비어있지 않으면) s3Service를 사용하여 S3에서 이미지를 삭제합니다.
+    회원 객체의 이미지 URL을 null로 설정합니다.
+    회원 정보를 저장합니다.
+    ResponseEntity.ok().build()를 반환하여 성공 상태코드(200 OK)를 응답합니다.
+     */
+    @DeleteMapping("/delete/imageFile/{id}")
+    public ResponseEntity<?> deleteFile(@PathVariable Long id) {
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("회원 정보가 없습니다"));
+
+        String imageUrl = member.getImageUrl();
+
+        if (imageUrl != null && !imageUrl.isEmpty()) {
+            s3Service.delete(imageUrl);
+        }
+
+        member.setImageUrl(null);
+        memberRepository.save(member);
+
+        return ResponseEntity.ok().build();
+    }
+
+
+    // myPage에서 회원 삭제
+    @DeleteMapping("/delete/user/{id}")
+    public ResponseEntity<?> deleteUser(@PathVariable Long id) {
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("회원 정보가 없습니다"));
+        memberRepository.delete(member);
+        return ResponseEntity.ok().build();
     }
 
 

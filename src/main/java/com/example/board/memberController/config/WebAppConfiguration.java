@@ -12,7 +12,6 @@ public class WebAppConfiguration implements WebMvcConfigurer {
                 .allowedOrigins("*")
                 .allowedMethods("GET", "POST", "OPTIONS", "PUT", "PATCH", "DELETE")
                 .allowedHeaders("*")
-                .exposedHeaders("Authorization") // 추가
                 .maxAge(3600);
     }
 }

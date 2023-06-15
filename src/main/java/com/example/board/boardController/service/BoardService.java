@@ -10,7 +10,7 @@ public interface BoardService {
      @Transactional
      Board getBoardByIdAndMember(Long boardId, String memberNickname);
 
-     Long board(String nickName, CategoryEnum category, String title, String contents);
+     Long board(Long id, CategoryEnum category, String title, String contents);
      Long updateBoard(Long boardId, CategoryEnum category, String updatedTitle, String updatedContents);
      Board findOne(Long boardId);
      List<Board> findAll();

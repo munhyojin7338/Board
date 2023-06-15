@@ -19,7 +19,6 @@ public class APIController {
         return "home";
     }
 
-
     // 회원가입 페이지 표시
     @GetMapping("/signup")
     public String signupForm() {
@@ -43,9 +42,6 @@ public class APIController {
     public String conditionalHome() {
         return "mainHome";
     }
-
-    // Board
-
 
     // logout
     @GetMapping("/logout")

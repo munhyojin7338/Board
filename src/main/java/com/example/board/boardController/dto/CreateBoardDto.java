@@ -9,7 +9,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CreateBoardDto {
-    private String nickName;
+    private Long id;
     private CategoryEnum categoryEnum;
     private String title;
     private String contents;
