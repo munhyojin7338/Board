@@ -70,6 +70,7 @@ public class Member implements UserDetails {
                 .collect(Collectors.toList());
     }
 
+
     @Override
     public String getUsername() {
         return email;
