@@ -24,9 +24,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -80,7 +78,7 @@ public class MemberController {
 
     // 로그인
     @PostMapping("/login")
-    public ModelAndView login(@Valid MemberLoginRequestDto memberLoginRequestDto, Errors errors, HttpServletRequest request, HttpServletResponse response) {
+    public ModelAndView login(@Valid MemberLoginRequestDto memberLoginRequestDto, Errors errors,  HttpServletResponse response) {
         List<ResponseError> responseErrorList = new ArrayList<>();
 
         if (errors.hasErrors()) {
@@ -90,7 +88,6 @@ public class MemberController {
         }
 
         Optional<Member> optionalMember = memberRepository.findByEmail(memberLoginRequestDto.getEmail());
-
 
         if (optionalMember.isEmpty()) {
             ModelAndView modelAndView = new ModelAndView("login");
@@ -112,12 +109,6 @@ public class MemberController {
         Cookie jwtCookie = new Cookie("jwtToken", tokenInfo.getAccessToken());
         jwtCookie.setPath("/");
         response.addCookie(jwtCookie);
-
-        System.out.println(jwtCookie);
-
-        HttpSession session = request.getSession();
-        session.setAttribute("nickName", member.getNickName());
-        System.out.println(session);
 
         return new ModelAndView(new RedirectView("/mainHome"));
 

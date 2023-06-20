@@ -23,7 +23,6 @@ public class BoardServiceImpl implements BoardService {
     private final MemberRepository memberRepository;
 
 
-
     @Override
     @Transactional
     public List<Board> getAllBoards() {
@@ -38,18 +37,7 @@ public class BoardServiceImpl implements BoardService {
     }
 
 
-    @Override
-    @Transactional
-    public Board getBoardByIdAndMember(Long boardId, String memberNickname) {
-        Member member = memberRepository.findByNickName(memberNickname)
-                .orElseThrow(() -> new IllegalArgumentException("해당 회원을 찾을 수 없습니다."));
-
-        return boardRepository.findByIdAndMember(boardId, member)
-                .orElseThrow(() -> new IllegalArgumentException("해당 게시물을 찾을 수 없거나 권한이 없습니다."));
-    }
-
-
-
+    // 게시글 생성
     @Override
     @Transactional
     public Long board(Long id
@@ -84,7 +72,7 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     @Transactional
-    public void deleteBoard(Long boardId) {
+    public boolean deleteBoard(Long boardId) {
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new RuntimeException("게시물을 찾을 수 없습니다."));
 
@@ -92,6 +80,7 @@ public class BoardServiceImpl implements BoardService {
 
 
         boardRepository.deleteById(boardId);
+        return true;
     }
 
     @Override
@@ -100,13 +89,6 @@ public class BoardServiceImpl implements BoardService {
         return boardRepository.findById(boardId)
                 .orElseThrow(() -> new RuntimeException("게시물을 찾을 수 없습니다."));
     }
-
-    @Override
-    public List<Board> findAll() {
-        return boardRepository.findAll();
-    }
-
-
 
 
 }
