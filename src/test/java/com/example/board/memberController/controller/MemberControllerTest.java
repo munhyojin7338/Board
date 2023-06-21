@@ -1,6 +1,5 @@
 package com.example.board.memberController.controller;
 
-import com.example.board.memberController.entity.Member;
 import com.example.board.memberController.repository.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,8 +21,6 @@ class MemberControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    private MemberRepository memberRepository;
 
     @Test
     @DisplayName("로그인 테스트 진행 - 가입되지 않은 e-mail 로그인 할 경우 로그인 실패 ")
@@ -45,7 +42,7 @@ class MemberControllerTest {
     }
 
     @Test
-    @DisplayName("올바른 E-MAIL, 틀린 비밀번호로 로그인할 경우 실패")
+    @DisplayName("올바른 E-Mail, 틀린 비밀번호로 로그인할 경우 실패")
     void loginWithIncorrectPassword() throws Exception {
         // given
         String email = "test2@naver.com";
@@ -60,6 +57,24 @@ class MemberControllerTest {
                 .andExpect(MockMvcResultMatchers.view().name("login"))
                 .andExpect(MockMvcResultMatchers.model().attributeExists("errorMessage"))
                 .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    @DisplayName("올바른 E-Mail, password 입력으로 성공적으로 로그인 된 경우")
+    void successLogin() throws Exception {
+        // given
+        String email = "hyojin@naver.com";
+        String password = "1234";
+
+        // when
+        mockMvc.perform(MockMvcRequestBuilders.post("/login")
+                        .param("email", email)
+                        .param("password", password)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
+                .andExpect(MockMvcResultMatchers.redirectedUrl("/mainHome"))
+                .andDo(MockMvcResultHandlers.print());
+        // then
     }
 
 }
