@@ -10,9 +10,6 @@
     <h2>반갑습니다, ${sessionScope.nickName}님</h2>
     <br>
 
-
-
-
     <a href="logout">logout</a>
     <a href="board">Board</a>
     <a href="myPage">myPage</a>

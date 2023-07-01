@@ -24,7 +24,9 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -78,7 +80,10 @@ public class MemberController {
 
     // 로그인
     @PostMapping("/login")
-    public ModelAndView login(@Valid MemberLoginRequestDto memberLoginRequestDto, Errors errors,  HttpServletResponse response) {
+    public ModelAndView login(@Valid MemberLoginRequestDto memberLoginRequestDto
+            , Errors errors
+            , HttpServletResponse response
+            , HttpServletRequest request) {
         List<ResponseError> responseErrorList = new ArrayList<>();
 
         if (errors.hasErrors()) {
@@ -109,6 +114,10 @@ public class MemberController {
         Cookie jwtCookie = new Cookie("jwtToken", tokenInfo.getAccessToken());
         jwtCookie.setPath("/");
         response.addCookie(jwtCookie);
+
+        // 세션에 사용자 닉네임 저장
+        HttpSession session = request.getSession();
+        session.setAttribute("nickName", member.getNickName());
 
         return new ModelAndView(new RedirectView("/mainHome"));
 
@@ -152,18 +161,18 @@ public class MemberController {
     // myPage 회원 프로필 이미지 업로드
     @PostMapping("/upload/{id}")
     public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file, @PathVariable Long id)
-            throws IOException  {
-       Member member = memberRepository.findById(id)
-               .orElseThrow(() -> new RuntimeException("회원 정보가 없습니다"));
+            throws IOException {
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("회원 정보가 없습니다"));
 
 
-       String fileName = s3Service.upload(file);
+        String fileName = s3Service.upload(file);
 
-       member.setImageUrl(fileName);
+        member.setImageUrl(fileName);
 
-       memberRepository.save(member);
+        memberRepository.save(member);
 
-       return ResponseEntity.ok().build();
+        return ResponseEntity.ok().build();
     }
 
     /* myPage 회원 프로필 삭제

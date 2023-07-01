@@ -28,6 +28,7 @@ repositories {
 dependencies {
     // 회원 정보 수정을 위하여 설정한 세팅
     providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+
     implementation 'javax.servlet:javax.servlet-api:4.0.1'
 
     testImplementation 'org.assertj:assertj-core:3.24.2' // AssertJ 라이브러리 추가
@@ -76,8 +77,6 @@ dependencies {
 
     //AWS S3
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
-
-
 
 }
 
