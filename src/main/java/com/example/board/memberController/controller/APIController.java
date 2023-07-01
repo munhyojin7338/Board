@@ -4,9 +4,7 @@ package com.example.board.memberController.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 
 @RequiredArgsConstructor
 @Controller
@@ -52,13 +50,13 @@ public class APIController {
     // myPage
     @GetMapping("/myPage")
     public String myPage() {
-        return "/myPage";
+        return "myPage";
     }
 
     // Fail
     @GetMapping("/emailFail")
     public String emailFail() {
-        return "/emailFail";
+        return "emailFail";
     }
 
     // Fail
@@ -77,7 +75,7 @@ public class APIController {
     //updatePassword
     @GetMapping("/updatePassword")
     public String updatePassword() {
-        return "/updatePassword";
+        return "updatePassword";
     }
 
 }
