@@ -1,6 +1,7 @@
 package com.example.board.boardController.entity;
 
 import com.example.board.memberController.entity.Member;
+import com.example.board.memberController.entity.Reaction;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -35,9 +36,54 @@ public class Board {
     @Column
     private String boardImageUrl; // 게시판 이미지 업로드 로직
 
-    private LocalDateTime createDate;
+    private LocalDateTime createDate; // 생성날짜
 
-    private LocalDateTime updateDate;
+    private LocalDateTime updateDate; // 수정날짜
+
+    @Column
+    private Integer likes = 0; // 좋아요 수
+
+    @Column
+    private Integer  dislikes; // 싫어요 수
+
+    @Column
+    private Integer  views; // 조회수
+
+    // 좋아요 수 증가
+    public void incrementLikes() {
+        if (this.likes == null) {
+            this.likes = 1;
+        } else {
+            this.likes++;
+        }
+    }
+
+    // 좋아요 수 감소
+    public void decrementLikes() {
+        if (this.likes == null || this.likes <= 0) {
+            this.likes = 0;
+        } else {
+            this.likes--;
+        }
+    }
+
+    // 싫어요 수 증가
+    public void incrementDislikes() {
+        if (this.dislikes == null) {
+            this.dislikes = 1;
+        } else {
+            this.dislikes++;
+        }
+    }
+
+    // 싫어요 수 감소
+    public void decrementDislikes() {
+        if (this.dislikes == null || this.dislikes <= 0) {
+            this.dislikes = 0;
+        } else {
+            this.dislikes--;
+        }
+    }
 
     @Enumerated(EnumType.STRING)
     @Column(name = "category")
@@ -45,6 +91,9 @@ public class Board {
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
     private List<Comment> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Reaction> reactions = new ArrayList<>();
 
     public void addComment(Comment comment) {
         this.comments.add(comment);
@@ -55,7 +104,6 @@ public class Board {
         this.comments.remove(comment);
         comment.setBoard(null);
     }
-
 
 
     public void createBoard(Member member, CategoryEnum category, String title, String contents) {

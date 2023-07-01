@@ -7,7 +7,9 @@ import com.example.board.boardController.dto.UpdateBoard;
 import com.example.board.boardController.entity.Board;
 import com.example.board.boardController.repository.BoardRepository;
 import com.example.board.boardController.service.BoardService;
+import com.example.board.memberController.entity.ReactionEnum;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -72,5 +74,23 @@ public class BoardController {
         return ResponseEntity.ok().build();
     }
 
+    // 게시글 좋아요/싫어요 토글 API
+    @PostMapping("/board/{boardId}/reaction/{id}")
+    public ResponseEntity<String> toggleBoardReaction(
+            @PathVariable Long boardId,
+            @PathVariable Long id,
+            @RequestParam ReactionEnum reaction) {
+
+        Board board;
+        try {
+            board = boardService.toggleReaction(boardId, id, reaction);
+        } catch (RuntimeException e) {
+            // 해당 게시글이 없거나 회원을 찾을 수 없는 경우 등 예외 처리
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("에러 메시지");
+        }
+
+        // 반응 토글이 성공적으로 이루어진 경우
+        return ResponseEntity.ok("반응하였습니다.");
+    }
 
 }
