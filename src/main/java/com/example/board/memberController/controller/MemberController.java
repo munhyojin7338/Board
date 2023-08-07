@@ -112,12 +112,16 @@ public class MemberController {
 
         // JWT 토큰을 쿠키에 저장
         Cookie jwtCookie = new Cookie("jwtToken", tokenInfo.getAccessToken());
+        Cookie idCookie = new Cookie("myId", member.getId().toString());
         jwtCookie.setPath("/");
         response.addCookie(jwtCookie);
+        response.addCookie(idCookie);
 
         // 세션에 사용자 닉네임 저장
         HttpSession session = request.getSession();
         session.setAttribute("nickName", member.getNickName());
+
+        session.setAttribute("memberId", member.getId());
 
         return new ModelAndView(new RedirectView("/mainHome"));
 

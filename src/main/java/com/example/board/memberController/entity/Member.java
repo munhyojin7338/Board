@@ -2,6 +2,7 @@ package com.example.board.memberController.entity;
 
 import com.example.board.boardController.entity.Board;
 import com.example.board.boardController.entity.Comment;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -52,11 +53,17 @@ public class Member implements UserDetails {
     private String imageUrl;
 
 
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore  // 순환 참조를 방지하기 위해 추가
     private List<Board> boardList = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Comment> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<Reaction> reactions = new ArrayList<>();
 
 
     @ElementCollection(fetch = FetchType.EAGER)

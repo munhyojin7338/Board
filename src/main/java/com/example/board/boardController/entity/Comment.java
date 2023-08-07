@@ -1,6 +1,7 @@
 package com.example.board.boardController.entity;
 
 import com.example.board.memberController.entity.Member;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
 import javax.persistence.*;
@@ -17,7 +18,7 @@ public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "comment_id", nullable = false)
-    private Long id;
+    private Long commentId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id")
@@ -30,10 +31,11 @@ public class Comment {
     @Column(nullable = false)
     private String content;
 
+    @Column(nullable = false)
     private LocalDateTime createdAt;
 
+    @Column(nullable = false)
     private LocalDateTime updateDate;
-
 
     public Comment(Board board, Member member, String content) {
         this.board = board;

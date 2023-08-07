@@ -12,7 +12,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     Optional<Member> findByEmail(String username);
 
-    Optional<Member> findById(Long id);
+    Optional<Member> findById(Long memberId);
 
     boolean existsByEmail(String email);
 

@@ -1,5 +1,6 @@
 package com.example.board.boardController.service.Impl;
 
+import com.example.board.boardController.dto.CreateBoardDto;
 import com.example.board.boardController.entity.Board;
 import com.example.board.boardController.entity.CategoryEnum;
 import com.example.board.boardController.repository.BoardRepository;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -26,7 +28,6 @@ public class BoardServiceImpl implements BoardService {
     private final MemberRepository memberRepository;
 
     private final ReactionRepository reactionRepository;
-
 
     @Override
     @Transactional
@@ -41,25 +42,29 @@ public class BoardServiceImpl implements BoardService {
                 .orElseThrow(() -> new RuntimeException("게시물을 찾을 수 없습니다."));
     }
 
-
     // 게시글 생성
     @Override
     @Transactional
-    public Long board(Long id
-            , CategoryEnum category
-            , String title
-            , String contents) {
+    public Long createBoard(CreateBoardDto createBoardDto) {
+        System.out.println("1");
+        Long memberId = createBoardDto.getMemberId();
 
-        Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 회원을 찾을 수 없습니다."));
+        System.out.println(memberId); // null 찍히고 있다
+
+        if (memberId == null) {
+            throw new RuntimeException("게시판을 생성하기 위한 회원 ID가 유효하지 않습니다.");
+        }
+        System.out.println("2");
+        Optional<Member> optionalMember = memberRepository.findById(memberId);
+        Member member = optionalMember.orElseThrow(() -> new RuntimeException("해당 회원을 찾을 수 없습니다."));
+        System.out.println(member);
 
         Board board = new Board();
-        board.createBoard(member, category, title, contents);
+        board.createBoard(member, createBoardDto.getCategoryEnum(), createBoardDto.getTitle(), createBoardDto.getContents());
         boardRepository.save(board);
 
         return board.getId();
     }
-
 
     @Override
     @Transactional
@@ -95,7 +100,7 @@ public class BoardServiceImpl implements BoardService {
                 .orElseThrow(() -> new RuntimeException("게시물을 찾을 수 없습니다."));
     }
 
-
+    // 토글 좋아요 싫어요
     @Override
     @Transactional
     public Board toggleReaction(Long boardId, Long id, ReactionEnum reactionEnum) {
@@ -152,13 +157,21 @@ public class BoardServiceImpl implements BoardService {
         return board;
     }
 
-
     private Reaction findReaction(Member member, Board board) {
         return board.getReactions().stream()
                 .filter(reaction -> reaction.getMember().equals(member))
                 .findFirst()
                 .orElse(null);
     }
+
+
+    // 조회수를 올리는 작업
+    @Override
+    public Board saveBoard(Board board) {
+        return boardRepository.save(board);
+    }
+
+
 
 
 

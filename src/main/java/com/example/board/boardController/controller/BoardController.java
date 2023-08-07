@@ -14,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.io.IOException;
@@ -29,17 +28,9 @@ public class BoardController {
     private final S3Service s3Service;
 
     // 게시판 로직 생성
-    @PostMapping("/createBoard")
-    public String createBoard(@Valid @ModelAttribute("createBoardDto") CreateBoardDto createBoardDto,
-                              RedirectAttributes redirectAttributes) {
-
-        boardService.board(createBoardDto.getId(),
-                createBoardDto.getCategoryEnum(),
-                createBoardDto.getTitle(),
-                createBoardDto.getContents());
-
-        redirectAttributes.addFlashAttribute("message", "게시글이 작성되었습니다.");
-
+    @PostMapping("/createBoardDto")
+    public String createBoard(@Valid CreateBoardDto createBoardDto) {
+        boardService.createBoard(createBoardDto);
         return "redirect:/board";
     }
 
