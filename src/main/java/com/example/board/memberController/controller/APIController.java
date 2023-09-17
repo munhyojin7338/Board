@@ -71,11 +71,16 @@ public class APIController {
         return "updateNickName";
     }
 
-
     //updatePassword
     @GetMapping("/updatePassword")
     public String updatePassword() {
         return "updatePassword";
+    }
+
+    // 회원탈퇴 페이지로 이동
+    @GetMapping("/withdraw")
+    public String withdraw(){
+        return "withdraw";
     }
 
 }

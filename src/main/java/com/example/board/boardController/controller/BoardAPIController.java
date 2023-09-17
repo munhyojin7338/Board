@@ -1,10 +1,12 @@
 package com.example.board.boardController.controller;
 
 import com.amazonaws.services.kms.model.NotFoundException;
+import com.example.board.boardController.dto.CreateBoardDto;
 import com.example.board.boardController.dto.UpdateBoard;
 import com.example.board.boardController.entity.Board;
 import com.example.board.boardController.entity.CategoryEnum;
 import com.example.board.boardController.service.BoardService;
+import com.example.board.memberController.entity.Member;
 import com.example.board.memberController.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -33,8 +35,9 @@ public class BoardAPIController {
 
     // 게시판 생성 페이지
     @GetMapping("/createBoardDto")
-    public String createBoardForm(HttpSession session, Model model) {
+    public String createBoardForm(HttpSession session, Model model, Member member) {
         Long memberId = (Long) session.getAttribute("memberId"); // 세션에서 회원 ID 가져오기
+        model.addAttribute("createBoardDto", new CreateBoardDto());
         model.addAttribute("memberId", memberId);
         return "createBoardDto";
     }

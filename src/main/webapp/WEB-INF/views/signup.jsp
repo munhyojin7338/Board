@@ -25,7 +25,7 @@
 
         .signup-box h1 {
             font-size: 28px;
-            margin-bottom: 20px;
+            margin: 20px auto;
         }
 
         .signup-box label {
@@ -122,39 +122,38 @@
 </head>
 
 <body>
-<h1>회원가입</h1>
-
-<form action="/signup" method="post">
-    <div>
-        <label>Email:</label>
-        <input type="email" name="email" id="emailInput" required><br>
-    </div>
-
-
-    <div>
-        <label>Password:</label>
-        <input type="password" name="password" id="passwordInput" required><br>
-    </div>
-
-    <div>
-        <label>Confirm Password:</label>
-        <input type="password" name="confirmPassword" id="confirmPasswordInput" required><br>
-    </div>
-
-    <div>
-        <label>NickName:</label>
-        <input type="text" name="nickName" id="nickNameInput" required><br>
-    </div>
-
-    <div>
-        <label>phone: <input type="phone" name="phone"> ex "-"없이 숫자만 입력</label>
-    </div>
-
-    <input type="submit" value="가입하기">
-</form>
-
-<a href="/" input type="submit">메인으로</a>
+<div class="signup-box">
+    <h1>회원가입</h1>
+    <form action="/signup" method="post">
+        <div>
+            <label>Email:</label>
+            <input type="email" name="email" id="emailInput" required><br>
+        </div>
 
 
+        <div>
+            <label>Password:</label>
+            <input type="password" name="password" id="passwordInput" required><br>
+        </div>
+
+        <div>
+            <label>Confirm Password:</label>
+            <input type="password" name="confirmPassword" id="confirmPasswordInput" required><br>
+        </div>
+
+        <div>
+            <label>NickName:</label>
+            <input type="text" name="nickName" id="nickNameInput" required><br>
+        </div>
+
+        <div>
+            <label>phone: <input type="phone" name="phone"> ex "-"없이 숫자만 입력</label>
+        </div>
+
+        <input type="submit" value="가입하기">
+    </form>
+
+    <a href="/" input type="submit">메인으로</a>
+</div>
 </body>
 </html>

@@ -45,7 +45,7 @@ public class MemberController {
 
     private final S3Service s3Service;
 
-
+    //  회원가입
     @PostMapping("/signup")
     public String signup(@Valid MemberSignUpRequestDto signUpRequestDto) {
 
@@ -206,15 +206,22 @@ public class MemberController {
         return ResponseEntity.ok().build();
     }
 
-
-    // myPage에서 회원 삭제
     @DeleteMapping("/delete/user/{id}")
-    public ResponseEntity<?> deleteUser(@PathVariable Long id) {
-        Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("회원 정보가 없습니다"));
-        memberRepository.delete(member);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<String> deleteUser(@PathVariable Long id) {
+        try {
+            // 해당 ID를 가진 회원 정보를 찾습니다.
+            Optional<Member> optionalMember = memberRepository.findById(id);
+
+            if (optionalMember.isPresent()) {
+                Member member = optionalMember.get();
+                // 회원 정보 삭제
+                memberRepository.delete(member);
+                return ResponseEntity.ok().body("회원이 성공적으로 삭제되었습니다.");
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("회원 정보를 찾을 수 없습니다.");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원 삭제 중 오류가 발생했습니다.");
+        }
     }
-
-
 }

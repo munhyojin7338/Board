@@ -42,30 +42,28 @@ public class BoardServiceImpl implements BoardService {
                 .orElseThrow(() -> new RuntimeException("게시물을 찾을 수 없습니다."));
     }
 
+
     // 게시글 생성
     @Override
     @Transactional
-    public Long createBoard(CreateBoardDto createBoardDto) {
-        System.out.println("1");
-        Long memberId = createBoardDto.getMemberId();
+    public Long createBoard(CreateBoardDto createBoardDto, Optional<Member> memberOptional) {
+        if (memberOptional.isPresent()) {
+            Member member = memberOptional.get();
+            System.out.println("3");
+            Long memberId = createBoardDto.getMemberId();
 
-        System.out.println(memberId); // null 찍히고 있다
+            System.out.println(memberId);
 
-        if (memberId == null) {
-            throw new RuntimeException("게시판을 생성하기 위한 회원 ID가 유효하지 않습니다.");
+            Board board = new Board();
+            board.createBoard(member, createBoardDto.getCategoryEnum(), createBoardDto.getTitle(), createBoardDto.getContents());
+            boardRepository.save(board);
+
+            return board.getId();
+        } else {
+            // 예외 처리: 회원을 찾을 수 없는 경우 처리 로직 추가
+            return null; // 또는 예외를 던지거나 다른 처리 방식을 선택
         }
-        System.out.println("2");
-        Optional<Member> optionalMember = memberRepository.findById(memberId);
-        Member member = optionalMember.orElseThrow(() -> new RuntimeException("해당 회원을 찾을 수 없습니다."));
-        System.out.println(member);
-
-        Board board = new Board();
-        board.createBoard(member, createBoardDto.getCategoryEnum(), createBoardDto.getTitle(), createBoardDto.getContents());
-        boardRepository.save(board);
-
-        return board.getId();
     }
-
     @Override
     @Transactional
     public Long updateBoard(Long boardId, CategoryEnum category, String updatedTitle, String updatedContents) {
@@ -103,11 +101,11 @@ public class BoardServiceImpl implements BoardService {
     // 토글 좋아요 싫어요
     @Override
     @Transactional
-    public Board toggleReaction(Long boardId, Long id, ReactionEnum reactionEnum) {
+    public Board toggleReaction(Long boardId, Long memberId, ReactionEnum reactionEnum) {
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new RuntimeException("해당 게시글이 없습니다."));
 
-        Member member = memberRepository.findById(id)
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new RuntimeException("회원을 찾을 수 없습니다."));
 
         Reaction existingReaction = findReaction(member, board);

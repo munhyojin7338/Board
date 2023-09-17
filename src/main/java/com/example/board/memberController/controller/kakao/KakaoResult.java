@@ -7,7 +7,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-class KakaoResult {
+public class KakaoResult {
     Long id;
     String email;
     String nickname;

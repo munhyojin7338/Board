@@ -40,16 +40,16 @@ public class KakaoService {
             sb.append("grant_type=authorization_code");
 
             //1번 파라미터 client_id입니다. ***자신의 앱 REST API KEY로 변경해주세요***
-            sb.append("&client_id=2b463a34237272c508fea8ab9e99a0ab");
+            sb.append("&client_id=0c4dac238e4b5d119155fe349c57b471");
 
             //2번 파라미터 redirect_uri입니다. ***자신의 redirect uri로 변경해주세요***
-            sb.append("&redirect_uri=http://localhost:8080/kakaoPage");
+            sb.append("&redirect_uri=http://powerboard.shop/kakaoPage");
 
             //3번 파라미터 code입니다. 인자로 받아온 인증코드입니다.
             sb.append("&code=" + code);
 
             // 4번 파라미터 clientSecret
-            sb.append("&client_secret=BhzbxeUsj4k7croSUsGKXIadaGX42Y65");
+            sb.append("&client_secret=1soroY5vx3FqbX51mRQdo1bwiQb4xAVh");
             bw.write(sb.toString());
             bw.flush();//실제 요청을 보내는 부분
 
@@ -121,6 +121,8 @@ public class KakaoService {
             String line = "";
             String result = "";
 
+
+
             while ((line = br.readLine()) != null) {
                 result += line;
             }
@@ -134,11 +136,13 @@ public class KakaoService {
             //결과 json을 HashMap 형태로 변환하여 resultMap에 담음
             HashMap<String,Object> resultMap = mapper.readValue(result, HashMap.class);
             //json 파싱하여 id 가져오기
-            Long id = Long.valueOf(String.valueOf(resultMap.get("id")));
+            Long kakaoId = Long.valueOf(String.valueOf(resultMap.get("id")));
 
             //결과json 안에 properties key는 json Object를 value로 가짐
             HashMap<String,Object> properties = (HashMap<String, Object>) resultMap.get("properties");
             String nickname = (String)properties.get("nickname");
+
+
 
             //결과json 안에 kakao_account key는 json Object를 value로 가짐
             HashMap<String,Object> kakao_account = (HashMap<String, Object>) resultMap.get("kakao_account");
@@ -149,7 +153,8 @@ public class KakaoService {
 
             //유저정보 세팅
             user.setEmail(email);
-            user.setId(id);
+            // 카카오에서 받아온 고유 ID를 Member 엔티티의 kakaoId 필드에 설정
+            user.setKakaoId(kakaoId);
             user.setNickName(nickname);
 
             log.info("resultMap= {}",resultMap);

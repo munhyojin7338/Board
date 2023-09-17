@@ -3,13 +3,21 @@ package com.example.board.boardController.service;
 import com.example.board.boardController.dto.CreateBoardDto;
 import com.example.board.boardController.entity.Board;
 import com.example.board.boardController.entity.CategoryEnum;
+import com.example.board.memberController.entity.Member;
 import com.example.board.memberController.entity.ReactionEnum;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface BoardService {
 
-     Long createBoard(CreateBoardDto createBoardDto);
+
+
+
+
+     // 게시글 생성
+     Long createBoard(CreateBoardDto createBoardDto,  Optional<Member> memberOptional);
 
      Long updateBoard(Long boardId, CategoryEnum category, String updatedTitle, String updatedContents);
 

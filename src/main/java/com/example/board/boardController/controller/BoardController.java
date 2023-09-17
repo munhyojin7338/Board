@@ -7,7 +7,9 @@ import com.example.board.boardController.dto.UpdateBoard;
 import com.example.board.boardController.entity.Board;
 import com.example.board.boardController.repository.BoardRepository;
 import com.example.board.boardController.service.BoardService;
+import com.example.board.memberController.entity.Member;
 import com.example.board.memberController.entity.ReactionEnum;
+import com.example.board.memberController.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,8 +17,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
@@ -26,14 +30,29 @@ public class BoardController {
     private final BoardRepository boardRepository;
 
     private final S3Service s3Service;
+    private final MemberRepository memberRepository;
 
     // 게시판 로직 생성
     @PostMapping("/createBoardDto")
-    public String createBoard(@Valid CreateBoardDto createBoardDto) {
-        boardService.createBoard(createBoardDto);
+    public String createBoard(@Valid @ModelAttribute("createBoardDto") CreateBoardDto createBoardDto
+            , HttpSession session) {
+
+        System.out.println("1");
+        Long memberId = (Long) session.getAttribute("memberId");
+        System.out.println(memberId);
+
+        System.out.println("2");
+        Optional<Member> memberOptional = memberRepository.findById(memberId);
+        System.out.println("memberOptional: "+memberOptional);
+
+        if (memberOptional.isPresent()) {
+            boardService.createBoard(createBoardDto, memberOptional);
+        } else {
+
+        }
+
         return "redirect:/board";
     }
-
 
     // 게시글 수정
     @PostMapping("/board/{boardId}/edit")
@@ -46,7 +65,7 @@ public class BoardController {
     @DeleteMapping("/board/{boardId}")
     public String deleteBoard(@PathVariable Long boardId) {
         boardService.deleteBoard(boardId);
-        return "redirect:/board/";
+        return "redirect:/board";
     }
 
     // 게시글 이미지 업로드 하기

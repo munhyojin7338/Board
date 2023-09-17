@@ -1,4 +1,3 @@
-
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
@@ -24,6 +23,9 @@
             background-color: #fff;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             width: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         .mypage-box h1 {
@@ -54,19 +56,33 @@
         .mypage-box a:hover {
             background-color: #0056b3;
         }
+
+        /* 추가한 스타일 */
+        .mypage-box .action-links {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .mypage-box .action-links a {
+            margin: 5px 0;
+        }
     </style>
 </head>
-<body>
-<h1>HealthBoard</h1>
-<h2>반갑습니다, ${sessionScope.nickName}님</h2>
-<br>
-<h3>알림 내역(나중에 구현)</h3>
-<br>
-<a href="updateNickName"> 닉네임 수정 </a>
-<a href="/updatePassword"> password 수정</a>
-<br>
-<a href="/mainHome">메인 홈으로</a>
-<a href="/logout">로그아웃</a>
 
+<body>
+<div class="mypage-box">
+    <h1>HealthBoard</h1>
+    <h2>반갑습니다, ${sessionScope.nickName}님</h2>
+    <h3>알림 내역(나중에 구현)</h3>
+    <div class="action-links">
+        <a href="updateNickName">닉네임 수정</a>
+        <a href="/updatePassword">password 수정</a>
+        <a href="/mainHome">메인 홈으로</a>
+        <a href="/logout">로그아웃</a>
+        <a href="/withdraw">회원탈퇴</a>
+    </div>
+</div>
 </body>
 </html>

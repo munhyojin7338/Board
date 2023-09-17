@@ -61,7 +61,7 @@
     <a href="signup">회원가입</a>
     <a href="login">로그인</a>
 
-    <a href="https://kauth.kakao.com/oauth/authorize?client_id=2b463a34237272c508fea8ab9e99a0ab&redirect_uri=http://localhost:8080/kakaoPage&response_type=code">
+    <a href="https://kauth.kakao.com/oauth/authorize?client_id=0c4dac238e4b5d119155fe349c57b471&redirect_uri=http://powerboard.shop/kakaoPage&response_type=code">
         카카오로그인
     </a>
 </div>

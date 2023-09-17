@@ -21,23 +21,24 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Member implements UserDetails {
+public class Member  implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, name = "id")
     private Long id;
-    @Column(nullable = false)
+
+    @Column
     private String email;
 
-    @Column(nullable = false)
+    @Column
     private String password;
 
 
-    @Column(nullable = false)
+    @Column
     private String nickName;
 
-    @Column(nullable = false)
+    @Column
     private String phone;
 
     // 회원가입 날짜
@@ -52,9 +53,13 @@ public class Member implements UserDetails {
     @Column
     private String imageUrl;
 
+    // 카카오에서 받아온 고유 ID 값
+    @Column
+    private Long kakaoId;
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore  // 순환 참조를 방지하기 위해 추가
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.PERSIST) // 또는 CascadeType.MERGE
+    @JsonIgnore
     private List<Board> boardList = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
