@@ -89,6 +89,10 @@
 <body>
 <h1>HealthBoard</h1>
 <p1>${sessionScope.nickName}님!! 자유롭게 소통해보세요!</p1>
+
+<c:set var="board" value="${boardService.getBoardsOrderByViewsDesc()}" />
+
+
 <table>
     <thead>
     <tr>
@@ -97,8 +101,6 @@
         <th>카테고리</th>
         <th>제목</th>
         <th>내용</th>
-        <th>좋아요</th>
-        <th>싫어요</th>
         <th>조회수</th>
     </tr>
     </thead>
@@ -110,8 +112,6 @@
             <td>${board.category}</td>
             <td><a href="/board/${board.id}">${board.title}</a></td>
             <td>${board.contents}</td>
-            <td>${board.likes}</td>
-            <td>${board.dislikes}</td>
             <td>${board.views}</td>
         </tr>
     </c:forEach>

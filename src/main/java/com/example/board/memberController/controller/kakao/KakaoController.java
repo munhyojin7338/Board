@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -48,10 +49,15 @@ public class KakaoController {
                 }
             }
 
+            // JWT 토큰을 쿠키에 저장
+            Cookie KakaoIdCookie = new Cookie("KakaoId", member.getKakaoId().toString());
+            response.addCookie(KakaoIdCookie);
+
             // 세션에 사용자 닉네임 저장
             HttpSession session = request.getSession();
             session.setAttribute("nickName", member.getNickName());
-            session.setAttribute("memberId", member.getId()); // memberId를 세션에 추가
+            session.setAttribute("KakaoId", member.getKakaoId()); // KakaoId 세션에 추가
+            session.setAttribute("email", member.getEmail());
 
             return "redirect:/mainHome"; // 로그인 성공 후 이동할 페이지
         } else {

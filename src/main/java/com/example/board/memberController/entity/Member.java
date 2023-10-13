@@ -58,7 +58,7 @@ public class Member  implements UserDetails {
     private Long kakaoId;
 
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.PERSIST) // 또는 CascadeType.MERGE
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Board> boardList = new ArrayList<>();
 

@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Create Board</title>
+
     <style>
         body {
             display: flex;
@@ -13,14 +14,16 @@
             font-family: Arial, sans-serif;
         }
 
+
         .create-board-form {
             text-align: center;
-            padding: 40px;
-            border: 1px solid #ccc;
             background-color: #fff;
+            padding: 20px;
+            border: 1px solid #ccc;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: 500px;
+            width: 50%;
         }
+
 
         .create-board-form h1 {
             font-size: 32px;
@@ -51,7 +54,7 @@
 
         .create-board-form textarea {
             resize: vertical;
-            height: 200px;
+            height: 300px; /* 더 큰 comment box 높이 */
         }
 
         .create-board-form button[type="submit"] {
@@ -67,15 +70,20 @@
             background-color: #0056b3;
         }
     </style>
+
 </head>
 <body>
+<div class="create-board-form">
+
 <h1>Create Board</h1>
 
 <form action="/createBoardDto" method="post">
     <input type="hidden" name="memberId" value="${memberId}">
+
     <div>
         <h2> ${sessionScope.nickName}님</h2>
     </div>
+
     <div>
         <label for="category">Category:</label>
         <select id="category" name="categoryEnum" required>
@@ -95,5 +103,6 @@
     </div>
     <button type="submit">Submit</button>
 </form>
+</div>
 </body>
 </html>

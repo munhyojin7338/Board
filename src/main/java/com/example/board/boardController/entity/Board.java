@@ -44,49 +44,9 @@ public class Board {
     private LocalDateTime updateDate; // 수정날짜
 
     @Column
-    private Integer likes = 0; // 좋아요 수
-
-    @Column
-    private Integer  dislikes = 0; // 싫어요 수
-
-    @Column
     private Integer  views = 0; // 조회수
 
-    // 좋아요 수 증가
-    public void incrementLikes() {
-        if (this.likes == null) {
-            this.likes = 1;
-        } else {
-            this.likes++;
-        }
-    }
 
-    // 좋아요 수 감소
-    public void decrementLikes() {
-        if (this.likes == null || this.likes <= 0) {
-            this.likes = 0;
-        } else {
-            this.likes--;
-        }
-    }
-
-    // 싫어요 수 증가
-    public void incrementDislikes() {
-        if (this.dislikes == null) {
-            this.dislikes = 1;
-        } else {
-            this.dislikes++;
-        }
-    }
-
-    // 싫어요 수 감소
-    public void decrementDislikes() {
-        if (this.dislikes == null || this.dislikes <= 0) {
-            this.dislikes = 0;
-        } else {
-            this.dislikes--;
-        }
-    }
 
     // 조회수 증가
     public void incrementViews() {
@@ -97,6 +57,8 @@ public class Board {
         }
         System.out.println("incrementViews() 호출");
     }
+
+
 
     @Enumerated(EnumType.STRING)
     @Column(name = "category")

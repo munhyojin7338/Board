@@ -39,20 +39,41 @@ public class BoardController {
 
         System.out.println("1");
         Long memberId = (Long) session.getAttribute("memberId");
-        System.out.println(memberId);
+        System.out.println("memberId 는 " + memberId);
 
         System.out.println("2");
-        Optional<Member> memberOptional = memberRepository.findById(memberId);
-        System.out.println("memberOptional: "+memberOptional);
+        Long KakaoId = (Long) session.getAttribute("KakaoId");
+        System.out.println("KakaoId 는 " + KakaoId);
 
-        if (memberOptional.isPresent()) {
-            boardService.createBoard(createBoardDto, memberOptional);
+        System.out.println("3");
+        String username = (String) session.getAttribute("email");
+        System.out.println("Email 는 " + username);
+
+
+        if (KakaoId != null) {
+            Optional<Member> memberOptional = memberRepository.findByKakaoId(KakaoId);
+            if (memberOptional.isPresent()) {
+                System.out.println("KakaoID 넣는곳");
+                boardService.createBoard(createBoardDto, memberOptional, null);
+            } else {
+                System.out.println("가입된 회원이 없습니다");
+            }
+        } else if (memberId != null) {
+            Optional<Member> memberIdOptional = memberRepository.findById(memberId);
+            if (memberIdOptional.isPresent()) {
+                System.out.println("memberId 넣기");
+                boardService.createBoard(createBoardDto, memberIdOptional, null);
+            } else {
+                System.out.println("가입된 회원이 없습니다");
+            }
         } else {
-
+            System.out.println("KakaoId와 memberId가 모두 null입니다");
         }
+
 
         return "redirect:/board";
     }
+
 
     // 게시글 수정
     @PostMapping("/board/{boardId}/edit")
@@ -84,23 +105,5 @@ public class BoardController {
         return ResponseEntity.ok().build();
     }
 
-    // 게시글 좋아요/싫어요 토글 API
-    @PostMapping("/board/{boardId}/reaction/{id}")
-    public ResponseEntity<String> toggleBoardReaction(
-            @PathVariable Long boardId,
-            @PathVariable Long id,
-            @RequestParam ReactionEnum reaction) {
-
-        Board board;
-        try {
-            board = boardService.toggleReaction(boardId, id, reaction);
-        } catch (RuntimeException e) {
-            // 해당 게시글이 없거나 회원을 찾을 수 없는 경우 등 예외 처리
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("에러 메시지");
-        }
-
-        // 반응 토글이 성공적으로 이루어진 경우
-        return ResponseEntity.ok("반응하였습니다.");
-    }
 
 }

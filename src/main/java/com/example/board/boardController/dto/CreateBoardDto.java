@@ -10,6 +10,7 @@ import lombok.*;
 @AllArgsConstructor
 public class CreateBoardDto {
     private Long memberId;
+    private Long kakaoId;
     private CategoryEnum categoryEnum;
     private String title;
     private String contents;

@@ -6,8 +6,6 @@ import com.example.board.boardController.dto.UpdateBoard;
 import com.example.board.boardController.entity.Board;
 import com.example.board.boardController.entity.CategoryEnum;
 import com.example.board.boardController.service.BoardService;
-import com.example.board.memberController.entity.Member;
-import com.example.board.memberController.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,39 +20,46 @@ import java.util.List;
 public class BoardAPIController {
 
     private final BoardService boardService;
-    private final MemberRepository memberRepository;
+
 
 
     // 게시판 메인 페이지
     @GetMapping("/board")
     public String board(Model model) {
-        List<Board> boardList = boardService.getAllBoards();
+        List<Board> boardList = boardService.getBoardsOrderByViewsDesc(); // 조회수가 높은 순으로 가져오는 메서드
         model.addAttribute("boardList", boardList);
         return "board";
     }
 
     // 게시판 생성 페이지
     @GetMapping("/createBoardDto")
-    public String createBoardForm(HttpSession session, Model model, Member member) {
+    public String createBoardForm(HttpSession session, Model model) {
         Long memberId = (Long) session.getAttribute("memberId"); // 세션에서 회원 ID 가져오기
+        Long KakaoId = (Long) session.getAttribute("KakaoId");
+
         model.addAttribute("createBoardDto", new CreateBoardDto());
         model.addAttribute("memberId", memberId);
+        model.addAttribute("KakaoId", KakaoId);
         return "createBoardDto";
     }
 
-    // 게시판 수정 페이지
-    // 게시글 조회수 증가
+
+    // 조회수 증가 시키는 로직
     @GetMapping("/board/{boardId}")
     public String boardDetail(@PathVariable Long boardId, Model model, HttpSession session) {
+        // 게시글 조회
         Board board = boardService.getBoardById(boardId);
 
         if (board != null) {
-            Boolean isViewed = (Boolean) session.getAttribute("isViewed_" + boardId);
-
-            if (isViewed == null || !isViewed) {
+            // 세션에 조회한 게시글 ID를 저장 (중복 조회 방지)
+            String sessionKey = "viewed_" + boardId;
+            if (session.getAttribute(sessionKey) == null) {
+                // 조회수 증가
                 board.incrementViews();
+                session.setAttribute(sessionKey, true);
+
+                // 데이터베이스에 저장
                 boardService.saveBoard(board);
-                session.setAttribute("isViewed_" + boardId, true);
             }
 
             model.addAttribute("board", board);
@@ -63,6 +68,7 @@ public class BoardAPIController {
             throw new NotFoundException("게시글을 찾을 수 없습니다.");
         }
     }
+
 
     // 게시판 수정하기
     @GetMapping("/board/{boardId}/edit")
@@ -73,6 +79,7 @@ public class BoardAPIController {
         model.addAttribute("categories", CategoryEnum.values()); // 카테고리 목록을 모델에 추가
         return "editBoard";
 
-
     }
+
+
 }

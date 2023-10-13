@@ -6,10 +6,8 @@ import com.example.board.boardController.entity.CategoryEnum;
 import com.example.board.boardController.repository.BoardRepository;
 import com.example.board.boardController.service.BoardService;
 import com.example.board.memberController.entity.Member;
-import com.example.board.memberController.entity.Reaction;
-import com.example.board.memberController.entity.ReactionEnum;
-import com.example.board.memberController.repository.ReactionRepository;
 import com.example.board.memberController.repository.MemberRepository;
+import com.example.board.memberController.repository.ReactionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,10 +23,6 @@ import java.util.Optional;
 public class BoardServiceImpl implements BoardService {
 
     private final BoardRepository boardRepository;
-    private final MemberRepository memberRepository;
-
-    private final ReactionRepository reactionRepository;
-
     @Override
     @Transactional
     public List<Board> getAllBoards() {
@@ -44,23 +38,22 @@ public class BoardServiceImpl implements BoardService {
 
 
     // 게시글 생성
-    @Override
     @Transactional
-    public Long createBoard(CreateBoardDto createBoardDto, Optional<Member> memberOptional) {
+    @Override
+    public Long createBoard(CreateBoardDto createBoardDto, Optional<Member> memberOptional, Optional<Member> memberIdOptional) {
         if (memberOptional.isPresent()) {
             Member member = memberOptional.get();
-            System.out.println("3");
-            Long memberId = createBoardDto.getMemberId();
-
-            System.out.println(memberId);
-
             Board board = new Board();
             board.createBoard(member, createBoardDto.getCategoryEnum(), createBoardDto.getTitle(), createBoardDto.getContents());
             boardRepository.save(board);
-
+            return board.getId();
+        } else if (memberIdOptional.isPresent()) {
+            Member member = memberIdOptional.get();
+            Board board = new Board();
+            board.createBoard(member, createBoardDto.getCategoryEnum(), createBoardDto.getTitle(), createBoardDto.getContents());
+            boardRepository.save(board);
             return board.getId();
         } else {
-            // 예외 처리: 회원을 찾을 수 없는 경우 처리 로직 추가
             return null; // 또는 예외를 던지거나 다른 처리 방식을 선택
         }
     }
@@ -98,79 +91,21 @@ public class BoardServiceImpl implements BoardService {
                 .orElseThrow(() -> new RuntimeException("게시물을 찾을 수 없습니다."));
     }
 
-    // 토글 좋아요 싫어요
-    @Override
-    @Transactional
-    public Board toggleReaction(Long boardId, Long memberId, ReactionEnum reactionEnum) {
-        Board board = boardRepository.findById(boardId)
-                .orElseThrow(() -> new RuntimeException("해당 게시글이 없습니다."));
-
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new RuntimeException("회원을 찾을 수 없습니다."));
-
-        Reaction existingReaction = findReaction(member, board);
-
-        if (existingReaction != null) {
-            // 이미 반응이 있는 경우
-            if (existingReaction.getReactionEnum() == reactionEnum) {
-                // 이미 같은 종류의 반응이면 반응을 제거합니다.
-                board.getReactions().remove(existingReaction);
-                reactionRepository.delete(existingReaction);
-
-                if (reactionEnum == ReactionEnum.LIKE) {
-                    board.decrementLikes();
-                } else if (reactionEnum == ReactionEnum.DISLIKE) {
-                    board.decrementDislikes();
-                }
-            } else {
-                // 다른 종류의 반응이면 반응을 업데이트합니다.
-                existingReaction.setReactionEnum(reactionEnum);
-                reactionRepository.save(existingReaction);
-
-                if (reactionEnum == ReactionEnum.LIKE) {
-                    board.incrementLikes();
-                    board.decrementDislikes();
-                } else if (reactionEnum == ReactionEnum.DISLIKE) {
-                    board.incrementDislikes();
-                    board.decrementLikes();
-                }
-            }
-        } else {
-            // 반응이 없는 경우 새로운 반응을 추가합니다.
-            Reaction newReaction = new Reaction();
-            newReaction.setMember(member);
-            newReaction.setBoard(board);
-            newReaction.setReactionEnum(reactionEnum);
-
-            board.getReactions().add(newReaction);
-            reactionRepository.save(newReaction);
-
-            if (reactionEnum == ReactionEnum.LIKE) {
-                board.incrementLikes();
-            } else if (reactionEnum == ReactionEnum.DISLIKE) {
-                board.incrementDislikes();
-            }
-        }
-
-        return board;
-    }
-
-    private Reaction findReaction(Member member, Board board) {
-        return board.getReactions().stream()
-                .filter(reaction -> reaction.getMember().equals(member))
-                .findFirst()
-                .orElse(null);
-    }
 
 
     // 조회수를 올리는 작업
     @Override
+    @Transactional
     public Board saveBoard(Board board) {
         return boardRepository.save(board);
     }
 
+    // 높은 조회수가 가장 위에 있게 하는 작업
+    @Override
+    public List<Board> getBoardsOrderByViewsDesc() {
+        return boardRepository.findByOrderByViewsDesc();
 
-
+    }
 
 
 }
