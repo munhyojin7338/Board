@@ -13,4 +13,5 @@ public class UpdateBoard {
     private CategoryEnum category;
     private String title;
     private String contents;
+    private String UpBoardImageUrl;
 }

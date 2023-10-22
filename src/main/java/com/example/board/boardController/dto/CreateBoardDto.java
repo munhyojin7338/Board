@@ -9,8 +9,10 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CreateBoardDto {
-    private Long id;
+    private Long memberId;
+    private Long kakaoId;
     private CategoryEnum categoryEnum;
+    private String boardImageUrl; // 게시판 이미지 업로드 로직
     private String title;
     private String contents;
 }

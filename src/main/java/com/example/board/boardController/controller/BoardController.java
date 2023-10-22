@@ -7,17 +7,18 @@ import com.example.board.boardController.dto.UpdateBoard;
 import com.example.board.boardController.entity.Board;
 import com.example.board.boardController.repository.BoardRepository;
 import com.example.board.boardController.service.BoardService;
-import com.example.board.memberController.entity.ReactionEnum;
+import com.example.board.memberController.entity.Member;
+import com.example.board.memberController.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
@@ -27,27 +28,79 @@ public class BoardController {
     private final BoardRepository boardRepository;
 
     private final S3Service s3Service;
+    private final MemberRepository memberRepository;
 
     // 게시판 로직 생성
-    @PostMapping("/createBoard")
-    public String createBoard(@Valid @ModelAttribute("createBoardDto") CreateBoardDto createBoardDto,
-                              RedirectAttributes redirectAttributes) {
+    @PostMapping("/createBoardDto")
+    public String createBoard(@Valid @ModelAttribute("createBoardDto") CreateBoardDto createBoardDto
+            , HttpSession session
+            , @RequestParam("BoardFile") MultipartFile image) {
 
-        boardService.board(createBoardDto.getId(),
-                createBoardDto.getCategoryEnum(),
-                createBoardDto.getTitle(),
-                createBoardDto.getContents());
+        System.out.println("1");
+        Long memberId = (Long) session.getAttribute("memberId");
+        System.out.println("memberId 는 " + memberId);
 
-        redirectAttributes.addFlashAttribute("message", "게시글이 작성되었습니다.");
+        System.out.println("2");
+        Long KakaoId = (Long) session.getAttribute("KakaoId");
+        System.out.println("KakaoId 는 " + KakaoId);
+
+        System.out.println("3");
+        String username = (String) session.getAttribute("email");
+        System.out.println("Email 는 " + username);
+
+        // 이미지 파일이 업로드되었는지 확인
+        if (!image.isEmpty()) { // 이미지 파일이 비어있지 않다면 처리
+            try {
+                // 이미지 업로드 및 S3에 저장
+                String uniqueFileName = s3Service.upload(image); // 이미지 파일 이름을 문자열로 저장
+                createBoardDto.setBoardImageUrl(uniqueFileName); // 이미지 파일 이름을 DTO에 저장
+            } catch (IOException e) {
+                e.printStackTrace(); // 이미지 업로드 실패 시 처리
+            }
+        }
+
+
+        if (KakaoId != null) {
+            Optional<Member> memberOptional = memberRepository.findByKakaoId(KakaoId);
+            if (memberOptional.isPresent()) {
+                System.out.println("KakaoID 넣는곳");
+                boardService.createBoard(createBoardDto, memberOptional, null);
+            } else {
+                System.out.println("가입된 회원이 없습니다");
+            }
+        } else if (memberId != null) {
+            Optional<Member> memberIdOptional = memberRepository.findById(memberId);
+            if (memberIdOptional.isPresent()) {
+                System.out.println("memberId 넣기");
+                boardService.createBoard(createBoardDto, memberIdOptional, null);
+            } else {
+                System.out.println("가입된 회원이 없습니다");
+            }
+        } else {
+            System.out.println("KakaoId와 memberId가 모두 null입니다");
+        }
 
         return "redirect:/board";
     }
 
-
     // 게시글 수정
     @PostMapping("/board/{boardId}/edit")
-    public String updateBoard(@PathVariable Long boardId, @ModelAttribute UpdateBoard updateBoard) {
-        boardService.updateBoard(boardId, updateBoard.getCategory(), updateBoard.getTitle(), updateBoard.getContents());
+    public String updateBoard(@PathVariable Long boardId
+            , @ModelAttribute UpdateBoard updateBoard
+            , @RequestParam("BoardFile") MultipartFile image) {
+
+        // 이미지 파일이 업로드되었는지 확인
+        if (!image.isEmpty()) { // 이미지 파일이 비어있지 않다면 처리
+            try {
+                // 이미지 업로드 및 S3에 저장
+                String uniqueFileName = s3Service.upload(image); // 이미지 파일 이름을 문자열로 저장
+                updateBoard.setUpBoardImageUrl(uniqueFileName); // 이미지 파일 이름을 DTO에 저장
+            } catch (IOException e) {
+                e.printStackTrace(); // 이미지 업로드 실패 시 처리
+            }
+        }
+
+        boardService.updateBoard(boardId, updateBoard.getCategory(), updateBoard.getTitle(), updateBoard.getContents(), updateBoard.getUpBoardImageUrl());
         return "redirect:/board";
     }
 
@@ -55,42 +108,29 @@ public class BoardController {
     @DeleteMapping("/board/{boardId}")
     public String deleteBoard(@PathVariable Long boardId) {
         boardService.deleteBoard(boardId);
-        return "redirect:/board/";
+        return "redirect:/board";
     }
 
     // 게시글 이미지 업로드 하기
-    @PostMapping("/board/upload/{boardId}")
-    public ResponseEntity<?> uploadBoardFile(@RequestParam("BoardFile") MultipartFile file
-            , @PathVariable Long boardId) throws IOException {
-        Board board = boardRepository.findById(boardId)
-                .orElseThrow(() -> new RuntimeException("게시글 정보가 없습니다."));
+    @PostMapping("/board/upload")
+    public ResponseEntity<?> uploadBoardFile(@RequestParam("BoardFile") MultipartFile image) throws IOException {
+        System.out.println("1");
 
-        String boardFileName = s3Service.upload(file);
+        String boardFileName = s3Service.upload(image);
 
+        System.out.println("2");
+        Board board = new Board(); // 이 부분은 새로운 게시글을 생성하거나 업데이트할 게시글을 가져오는 코드로 변경 가능
+        // 게시글 정보를 가져오거나 생성하는 코드 (board)
+
+        System.out.println("3");
         board.setBoardImageUrl(boardFileName);
 
+        System.out.println("boardFileName" + boardFileName);
         boardRepository.save(board);
 
         return ResponseEntity.ok().build();
     }
 
-    // 게시글 좋아요/싫어요 토글 API
-    @PostMapping("/board/{boardId}/reaction/{id}")
-    public ResponseEntity<String> toggleBoardReaction(
-            @PathVariable Long boardId,
-            @PathVariable Long id,
-            @RequestParam ReactionEnum reaction) {
 
-        Board board;
-        try {
-            board = boardService.toggleReaction(boardId, id, reaction);
-        } catch (RuntimeException e) {
-            // 해당 게시글이 없거나 회원을 찾을 수 없는 경우 등 예외 처리
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("에러 메시지");
-        }
-
-        // 반응 토글이 성공적으로 이루어진 경우
-        return ResponseEntity.ok("반응하였습니다.");
-    }
 
 }

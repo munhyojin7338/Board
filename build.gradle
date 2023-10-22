@@ -80,6 +80,10 @@ dependencies {
 
 }
 
+bootWar {
+    archiveName("Board.war")
+}
+
 tasks.named('test') {
     useJUnitPlatform()
 }

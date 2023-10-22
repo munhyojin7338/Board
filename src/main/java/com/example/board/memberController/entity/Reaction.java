@@ -1,6 +1,7 @@
 package com.example.board.memberController.entity;
 
 import com.example.board.boardController.entity.Board;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,6 +28,7 @@ public class Reaction {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id")
+    @JsonIgnoreProperties("reactions")
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)

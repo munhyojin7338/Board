@@ -2,6 +2,8 @@ package com.example.board.boardController.entity;
 
 import com.example.board.memberController.entity.Member;
 import com.example.board.memberController.entity.Reaction;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,8 +24,9 @@ public class Board {
     @Column(name = "board_id")
     private Long id; // pk
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id")
+    @JsonIgnore  // 순환 참조를 방지하기 위해 추가
     private Member member;
 
     @Column(nullable = false)
@@ -41,78 +44,41 @@ public class Board {
     private LocalDateTime updateDate; // 수정날짜
 
     @Column
-    private Integer likes = 0; // 좋아요 수
+    private Integer  views = 0; // 조회수
 
-    @Column
-    private Integer  dislikes; // 싫어요 수
 
-    @Column
-    private Integer  views; // 조회수
 
-    // 좋아요 수 증가
-    public void incrementLikes() {
-        if (this.likes == null) {
-            this.likes = 1;
+    // 조회수 증가
+    public void incrementViews() {
+        if (this.views == null) {
+            this.views = 1;
         } else {
-            this.likes++;
+            this.views++;
         }
+        System.out.println("incrementViews() 호출");
     }
 
-    // 좋아요 수 감소
-    public void decrementLikes() {
-        if (this.likes == null || this.likes <= 0) {
-            this.likes = 0;
-        } else {
-            this.likes--;
-        }
-    }
-
-    // 싫어요 수 증가
-    public void incrementDislikes() {
-        if (this.dislikes == null) {
-            this.dislikes = 1;
-        } else {
-            this.dislikes++;
-        }
-    }
-
-    // 싫어요 수 감소
-    public void decrementDislikes() {
-        if (this.dislikes == null || this.dislikes <= 0) {
-            this.dislikes = 0;
-        } else {
-            this.dislikes--;
-        }
-    }
 
     @Enumerated(EnumType.STRING)
     @Column(name = "category")
     private CategoryEnum category;
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
+    @JsonIgnoreProperties("board")  // 순환 참조를 방지하기 위해 추가
     private List<Comment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties("board")
     private List<Reaction> reactions = new ArrayList<>();
 
-    public void addComment(Comment comment) {
-        this.comments.add(comment);
-        comment.setBoard(this);
-    }
 
-    public void removeComment(Comment comment) {
-        this.comments.remove(comment);
-        comment.setBoard(null);
-    }
-
-
-    public void createBoard(Member member, CategoryEnum category, String title, String contents) {
+    public void createBoard(Member member, CategoryEnum category, String title, String contents, String boardImageUrl) {
         this.member = member;
         this.category = category;
         this.title = title;
         this.contents = contents;
+        this.boardImageUrl = boardImageUrl;
         this.createDate = LocalDateTime.now();
-        this.updateDate = LocalDateTime.now();
         this.member.getBoardList().add(this);
     }
 
