@@ -74,7 +74,7 @@ public class BoardAPIController {
     @GetMapping("/board/{boardId}/edit")
     public String editBoard(@PathVariable Long boardId, Model model) {
         Board board = boardService.getBoardById(boardId);
-        UpdateBoard updateBoard = new UpdateBoard(board.getId(), board.getCategory(), board.getTitle(), board.getContents());
+        UpdateBoard updateBoard = new UpdateBoard(board.getId(), board.getCategory(), board.getTitle(), board.getContents(), board.getBoardImageUrl());
         model.addAttribute("updateBoard", updateBoard);
         model.addAttribute("categories", CategoryEnum.values()); // 카테고리 목록을 모델에 추가
         return "editBoard";

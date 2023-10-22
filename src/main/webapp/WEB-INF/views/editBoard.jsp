@@ -78,7 +78,7 @@
         <h2> ${sessionScope.nickName}님</h2>
     </div>
 
-    <form action="/board/${updateBoard.boardId}/edit" method="POST">
+    <form action="/board/${updateBoard.boardId}/edit" method="POST" enctype="multipart/form-data">
         <div>
             <label for="category">Category:</label>
             <select id="category" name="category" required>
@@ -97,6 +97,11 @@
         <div>
             <label for="contents">Contents:</label>
             <textarea id="contents" name="contents" required>${updateBoard.contents}</textarea>
+        </div>
+
+        <div>
+            <label for="image">이미지 업로드:</label>
+            <input type="file" id="image" name="BoardFile" accept="image/*">
         </div>
 
         <button type="submit">수정하기</button>

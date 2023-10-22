@@ -6,14 +6,6 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <style>
 
-        .board-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center; /* 가운데 정렬 */
-            text-align: center;
-            padding: 20px;
-        }
-
         .board-container h1 {
             font-size: 28px;
             margin-bottom: 10px;
@@ -46,6 +38,8 @@
     </style>
 
     <script>
+
+
         $(document).ready(function () {
             $("#commentForm").submit(function (event) {
                 event.preventDefault(); // 폼 제출 이벤트 중지
@@ -116,12 +110,12 @@
 
         });
 
-        function deleteComment(boardId, commentId) {
+        function deleteComment(boardId) {
             const memberId = $("#memberId").val();
 
             // AJAX 요청 보내기
             $.ajax({
-                url: `/comments/delete/${commentId}`,
+                url: `/board/${boardId}`,
                 type: "DELETE",
                 data: JSON.stringify({boardId: boardId, memberId: memberId}),
                 contentType: "application/json",
@@ -137,11 +131,33 @@
         }
     </script>
 
+    <script>
+        $(document).ready(function () {
+            // 이미지 URL을 가져와서 로그에 출력
+            console.log("이미지 URL: " + "${board.getBoardImageUrl()}");
+        });
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            // 이미지 URL을 가져와서 로그에 출력
+            console.log("이미지 URL: " + "${board.getBoardImageUrl()}");
+
+            // 게시글 이미지 URL 확인
+            const imageUrl = "${board.getBoardImageUrl()}";
+            if (imageUrl === "" || imageUrl === "null") {
+                // 이미지가 없는 경우 대체 이미지로 교체
+                document.getElementById("imageContainer").style.backgroundColor = "#eee"; // 배경색 변경
+                document.getElementById("boardImage").src = "https://boardbuket.s3.ap-northeast-2.amazonaws.com/blank-profile-picture-973460_1280.png";
+                document.getElementById("boardImage").alt = "대체 이미지";
+            }
+        });
+    </script>
 
 </head>
 
 <body style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; margin: 0; background-color: #f0f0f0; font-family: Arial, sans-serif;">
-<h1>Board Detail</h1>
+<h1>Board</h1>
 <h2>작성자: ${board.member.nickName}</h2>
 <h3 style="margin-left: 20px;">${board.title}</h3>
 <p style="margin-left: 20px;">${board.contents}</p>
@@ -151,9 +167,6 @@
     <button onclick="showConfirmation()">삭제하기</button>
 </c:if>
 
-<form id="deleteForm" action="/board/${boardId}" method="POST" style="display: none;">
-    <input type="hidden" name="_method" value="DELETE">
-</form>
 
 <form id="commentForm">
     <input type="hidden" name="boardId" id="boardId" value="${boardId}">
@@ -162,6 +175,10 @@
               style="width: 790px; height: 290px;"></textarea>
     <button type="submit">댓글 작성</button>
 </form>
+
+<div id="imageContainer" style="width: 100%; height: 300px; display: flex; justify-content: center; align-items: center; background-color: #eee;">
+    <img id="boardImage" src="https://boardbuket.s3.ap-northeast-2.amazonaws.com/${board.boardImageUrl}" alt="게시글 이미지" style="max-width: 100%; max-height: 100%;">
+</div>
 
 <p>조회수: ${board.views}</p>
 
@@ -192,6 +209,7 @@
                 </td>
             </tr>
         </c:forEach>
+
         </tbody>
     </table>
 </div>

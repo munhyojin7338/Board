@@ -15,6 +15,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/*
+회원가입, 로그인(JWT토큰), 회원정보수정(닉네임, 비밀번호),
+게시판 글쓰기, 댓글, 높은 조회수, 이미지파일 올리기
+ */
+
 @Setter
 @Getter
 @Builder

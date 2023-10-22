@@ -59,7 +59,6 @@ public class Board {
     }
 
 
-
     @Enumerated(EnumType.STRING)
     @Column(name = "category")
     private CategoryEnum category;
@@ -73,13 +72,13 @@ public class Board {
     private List<Reaction> reactions = new ArrayList<>();
 
 
-    public void createBoard(Member member, CategoryEnum category, String title, String contents) {
+    public void createBoard(Member member, CategoryEnum category, String title, String contents, String boardImageUrl) {
         this.member = member;
         this.category = category;
         this.title = title;
         this.contents = contents;
+        this.boardImageUrl = boardImageUrl;
         this.createDate = LocalDateTime.now();
-        this.updateDate = LocalDateTime.now();
         this.member.getBoardList().add(this);
     }
 

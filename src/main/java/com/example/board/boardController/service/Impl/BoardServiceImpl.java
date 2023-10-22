@@ -6,8 +6,6 @@ import com.example.board.boardController.entity.CategoryEnum;
 import com.example.board.boardController.repository.BoardRepository;
 import com.example.board.boardController.service.BoardService;
 import com.example.board.memberController.entity.Member;
-import com.example.board.memberController.repository.MemberRepository;
-import com.example.board.memberController.repository.ReactionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,28 +42,30 @@ public class BoardServiceImpl implements BoardService {
         if (memberOptional.isPresent()) {
             Member member = memberOptional.get();
             Board board = new Board();
-            board.createBoard(member, createBoardDto.getCategoryEnum(), createBoardDto.getTitle(), createBoardDto.getContents());
+            board.createBoard(member, createBoardDto.getCategoryEnum(), createBoardDto.getTitle(), createBoardDto.getContents(), createBoardDto.getBoardImageUrl());
             boardRepository.save(board);
             return board.getId();
         } else if (memberIdOptional.isPresent()) {
             Member member = memberIdOptional.get();
             Board board = new Board();
-            board.createBoard(member, createBoardDto.getCategoryEnum(), createBoardDto.getTitle(), createBoardDto.getContents());
+            board.createBoard(member, createBoardDto.getCategoryEnum(), createBoardDto.getTitle(), createBoardDto.getContents(),  createBoardDto.getBoardImageUrl());
             boardRepository.save(board);
             return board.getId();
         } else {
             return null; // 또는 예외를 던지거나 다른 처리 방식을 선택
         }
     }
+
     @Override
     @Transactional
-    public Long updateBoard(Long boardId, CategoryEnum category, String updatedTitle, String updatedContents) {
+    public Long updateBoard(Long boardId, CategoryEnum category, String updatedTitle, String updatedContents, String UpBoardImageUrl) {
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new RuntimeException("해당 게시물을 찾을 수 없습니다."));
 
         board.setCategory(category);
         board.setTitle(updatedTitle);
         board.setContents(updatedContents);
+        board.setBoardImageUrl(UpBoardImageUrl);
         board.setUpdateDate(LocalDateTime.now());
 
         return board.getId();

@@ -70,39 +70,62 @@
             background-color: #0056b3;
         }
     </style>
+    <script>
+        function previewImage(input) {
+            var imagePreview = document.getElementById('image-preview');
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                    imagePreview.style.display = 'block';
+                };
+                reader.readAsDataURL(input.files[0]);
+            } else {
+                imagePreview.style.display = 'none';
+            }
+        }
+    </script>
 
 </head>
 <body>
 <div class="create-board-form">
+    <h1>Create Board</h1>
+    <form action="/createBoardDto" method="post" enctype="multipart/form-data">
 
-<h1>Create Board</h1>
+        <input type="hidden" name="memberId" value="${memberId}">
 
-<form action="/createBoardDto" method="post">
-    <input type="hidden" name="memberId" value="${memberId}">
+        <div>
+            <h2> ${sessionScope.nickName}님</h2>
+        </div>
 
-    <div>
-        <h2> ${sessionScope.nickName}님</h2>
-    </div>
+        <div>
+            <label for="category">Category:</label>
+            <select id="category" name="categoryEnum" required>
+                <option value="FOOTBALL">Football</option>
+                <option value="BASKETBALL">Basketball</option>
+                <option value="VOLLEYBALL">Volleyball</option>
+                <option value="TENNIS">Tennis</option>
+            </select>
+        </div>
 
-    <div>
-        <label for="category">Category:</label>
-        <select id="category" name="categoryEnum" required>
-            <option value="FOOTBALL">Football</option>
-            <option value="BASKETBALL">Basketball</option>
-            <option value="VOLLEYBALL">Volleyball</option>
-            <option value="TENNIS">Tennis</option>
-        </select>
-    </div>
-    <div>
-        <label for="title">제목:</label>
-        <input type="text" id="title" name="title" required  style="width: 790px; ">
-    </div>
-    <div>
-        <label for="contents">내용:</label>
-        <textarea id="contents" name="contents" required style="width: 790px; height: 290px;" ></textarea>
-    </div>
-    <button type="submit">Submit</button>
-</form>
+        <div>
+            <label for="title">제목:</label>
+            <input type="text" id="title" name="title" class="form-input" required style="width: 790px;">
+        </div>
+
+        <div>
+            <label for="contents">내용:</label>
+            <textarea id="contents" name="contents" class="form-textarea" required style="width: 790px; height: 290px;"></textarea>
+        </div>
+
+        <div>
+            <label for="image">이미지 업로드:</label>
+            <input type="file" id="image" name="BoardFile" accept="image/*">
+        </div>
+
+        <button type="submit" class="form-button">Submit</button>
+    </form>
 </div>
+
 </body>
 </html>

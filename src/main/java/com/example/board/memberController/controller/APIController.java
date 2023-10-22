@@ -1,10 +1,14 @@
 package com.example.board.memberController.controller;
 
 
+import com.example.board.memberController.entity.Member;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+
+import javax.servlet.http.HttpSession;
 
 @RequiredArgsConstructor
 @Controller
@@ -37,20 +41,34 @@ public class APIController {
 
     // 로그인 성공하여 나온 mainPage
     @GetMapping("/mainHome")
-    public String conditionalHome() {
+    public String conditionalHome(Model model, HttpSession session) {
+
+        // 세션에서 현재 사용자 정보 가져오기 (세션에 "currentUser" 또는 다른 이름으로 저장한 경우)
+        Member member = (Member) session.getAttribute("sessionScope.nickName");
+
+        // 모델에 사용자 정보 추가
+        model.addAttribute("member", member);
         return "mainHome";
     }
+
+    // myPage 이동
+    @GetMapping("/myPage")
+    public String myPage(Model model, HttpSession session) {
+        // 세션에서 현재 사용자 정보 가져오기 (세션에 "currentUser" 또는 다른 이름으로 저장한 경우)
+        Member member = (Member) session.getAttribute("sessionScope.nickName");
+
+
+        // 모델에 사용자 정보 추가
+        model.addAttribute("member", member);
+
+        return "myPage";
+    }
+
 
     // logout
     @GetMapping("/logout")
     public String logout() {
         return "home";
-    }
-
-    // myPage
-    @GetMapping("/myPage")
-    public String myPage() {
-        return "myPage";
     }
 
     // Fail

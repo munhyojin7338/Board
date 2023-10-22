@@ -8,10 +8,8 @@ import com.example.board.boardController.entity.Board;
 import com.example.board.boardController.repository.BoardRepository;
 import com.example.board.boardController.service.BoardService;
 import com.example.board.memberController.entity.Member;
-import com.example.board.memberController.entity.ReactionEnum;
 import com.example.board.memberController.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -35,7 +33,8 @@ public class BoardController {
     // 게시판 로직 생성
     @PostMapping("/createBoardDto")
     public String createBoard(@Valid @ModelAttribute("createBoardDto") CreateBoardDto createBoardDto
-            , HttpSession session) {
+            , HttpSession session
+            , @RequestParam("BoardFile") MultipartFile image) {
 
         System.out.println("1");
         Long memberId = (Long) session.getAttribute("memberId");
@@ -48,6 +47,17 @@ public class BoardController {
         System.out.println("3");
         String username = (String) session.getAttribute("email");
         System.out.println("Email 는 " + username);
+
+        // 이미지 파일이 업로드되었는지 확인
+        if (!image.isEmpty()) { // 이미지 파일이 비어있지 않다면 처리
+            try {
+                // 이미지 업로드 및 S3에 저장
+                String uniqueFileName = s3Service.upload(image); // 이미지 파일 이름을 문자열로 저장
+                createBoardDto.setBoardImageUrl(uniqueFileName); // 이미지 파일 이름을 DTO에 저장
+            } catch (IOException e) {
+                e.printStackTrace(); // 이미지 업로드 실패 시 처리
+            }
+        }
 
 
         if (KakaoId != null) {
@@ -70,15 +80,27 @@ public class BoardController {
             System.out.println("KakaoId와 memberId가 모두 null입니다");
         }
 
-
         return "redirect:/board";
     }
 
-
     // 게시글 수정
     @PostMapping("/board/{boardId}/edit")
-    public String updateBoard(@PathVariable Long boardId, @ModelAttribute UpdateBoard updateBoard) {
-        boardService.updateBoard(boardId, updateBoard.getCategory(), updateBoard.getTitle(), updateBoard.getContents());
+    public String updateBoard(@PathVariable Long boardId
+            , @ModelAttribute UpdateBoard updateBoard
+            , @RequestParam("BoardFile") MultipartFile image) {
+
+        // 이미지 파일이 업로드되었는지 확인
+        if (!image.isEmpty()) { // 이미지 파일이 비어있지 않다면 처리
+            try {
+                // 이미지 업로드 및 S3에 저장
+                String uniqueFileName = s3Service.upload(image); // 이미지 파일 이름을 문자열로 저장
+                updateBoard.setUpBoardImageUrl(uniqueFileName); // 이미지 파일 이름을 DTO에 저장
+            } catch (IOException e) {
+                e.printStackTrace(); // 이미지 업로드 실패 시 처리
+            }
+        }
+
+        boardService.updateBoard(boardId, updateBoard.getCategory(), updateBoard.getTitle(), updateBoard.getContents(), updateBoard.getUpBoardImageUrl());
         return "redirect:/board";
     }
 
@@ -90,20 +112,25 @@ public class BoardController {
     }
 
     // 게시글 이미지 업로드 하기
-    @PostMapping("/board/upload/{boardId}")
-    public ResponseEntity<?> uploadBoardFile(@RequestParam("BoardFile") MultipartFile file
-            , @PathVariable Long boardId) throws IOException {
-        Board board = boardRepository.findById(boardId)
-                .orElseThrow(() -> new RuntimeException("게시글 정보가 없습니다."));
+    @PostMapping("/board/upload")
+    public ResponseEntity<?> uploadBoardFile(@RequestParam("BoardFile") MultipartFile image) throws IOException {
+        System.out.println("1");
 
-        String boardFileName = s3Service.upload(file);
+        String boardFileName = s3Service.upload(image);
 
+        System.out.println("2");
+        Board board = new Board(); // 이 부분은 새로운 게시글을 생성하거나 업데이트할 게시글을 가져오는 코드로 변경 가능
+        // 게시글 정보를 가져오거나 생성하는 코드 (board)
+
+        System.out.println("3");
         board.setBoardImageUrl(boardFileName);
 
+        System.out.println("boardFileName" + boardFileName);
         boardRepository.save(board);
 
         return ResponseEntity.ok().build();
     }
+
 
 
 }

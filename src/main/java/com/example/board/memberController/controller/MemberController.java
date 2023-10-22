@@ -47,7 +47,8 @@ public class MemberController {
 
     //  회원가입
     @PostMapping("/signup")
-    public String signup(@Valid MemberSignUpRequestDto signUpRequestDto) {
+    public String signup(@Valid MemberSignUpRequestDto signUpRequestDto
+            , @RequestParam("proFile") MultipartFile image) {
 
         boolean isEmailDuplicated = loginCheckService.checkEmail(signUpRequestDto.getEmail());
 
@@ -73,6 +74,19 @@ public class MemberController {
                 .localDateTime(LocalDateTime.now())
                 .build();
         memberRepository.save(member);
+
+        if (!image.isEmpty()) { // 이미지 파일이 비어있지 않다면 처리
+            try {
+                // 이미지 업로드 및 S3에 저장
+                String uniqueFileName = s3Service.upload(image);
+                // 저장된 이미지 URL을 회원 정보에 설정
+                member.setImageUrl(uniqueFileName);
+                memberRepository.save(member); // 회원 정보를 다시 저장하여 이미지 URL을 업데이트합니다.
+            } catch (IOException e) {
+                e.printStackTrace();
+                // 이미지 업로드 실패 시 처리
+            }
+        }
         System.out.println(member);
 
         return "redirect:/success";
@@ -122,7 +136,6 @@ public class MemberController {
         // 세션에 사용자 닉네임 저장
         HttpSession session = request.getSession();
         session.setAttribute("nickName", member.getNickName());
-
         session.setAttribute("memberId", member.getId());
         session.setAttribute("kakaoId", member.getKakaoId());
 
@@ -142,6 +155,7 @@ public class MemberController {
     public ResponseEntity<Boolean> checkByEmail(@PathVariable String email) {
         return ResponseEntity.ok(loginCheckService.checkEmail(email));
     }
+
 
     // myPage 닉네임 수정
     @RequestMapping(value = "/updateNickName/{id}", method = {RequestMethod.PUT, RequestMethod.POST})
@@ -166,32 +180,41 @@ public class MemberController {
     }
 
     // myPage 회원 프로필 이미지 업로드
-    @PostMapping("/upload/{id}")
-    public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file, @PathVariable Long id)
-            throws IOException {
-        Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("회원 정보가 없습니다"));
+    @PostMapping("/upload")
+    public String uploadFile(@RequestParam("proFile") MultipartFile proFile
+            , HttpSession session) throws IOException {
 
+        // 세션에서 현재 사용자 정보 가져오기
+        Long memberId = (Long) session.getAttribute("memberId");
+        Long kakaoId = (Long) session.getAttribute("kakaoId");
 
-        String fileName = s3Service.upload(file);
+        if (memberId != null || kakaoId != null) {
+            Optional<Member> memberOptional = null;
 
-        member.setImageUrl(fileName);
+            if (memberId != null) {
+                memberOptional = memberRepository.findById(memberId);
+            } else if (kakaoId != null) {
+                memberOptional = memberRepository.findByKakaoId(kakaoId);
+            }
 
-        memberRepository.save(member);
+            if (memberOptional.isPresent()) {
+                Member member = memberOptional.get();
 
-        return ResponseEntity.ok().build();
+                String fileName = s3Service.upload(proFile);
+                member.setImageUrl(fileName);
+                memberRepository.save(member); // 이미지 URL 업데이트를 위해 저장
+
+                // 이미지 업로드 후 마이페이지로 리디렉션
+                return "redirect:/myPage";
+            }
+        }
+// 이미지 업로드 후 마이페이지로 리디렉션
+        return "redirect:/myPage";
+
     }
 
-    /* myPage 회원 프로필 삭제
-    id라는 이름의 Long 타입 경로 변수를 받습니다.
-    memberRepository를 사용하여 주어진 id로 회원 정보를 조회합니다.
-    조회된 회원 정보가 없으면 예외를 발생시킵니다.
-    회원의 이미지 URL을 가져옵니다.
-    이미지 URL이 존재하면 (null이 아니고 비어있지 않으면) s3Service를 사용하여 S3에서 이미지를 삭제합니다.
-    회원 객체의 이미지 URL을 null로 설정합니다.
-    회원 정보를 저장합니다.
-    ResponseEntity.ok().build()를 반환하여 성공 상태코드(200 OK)를 응답합니다.
-     */
+
+    // myPage 이동 시
     @DeleteMapping("/delete/imageFile/{id}")
     public ResponseEntity<?> deleteFile(@PathVariable Long id) {
         Member member = memberRepository.findById(id)

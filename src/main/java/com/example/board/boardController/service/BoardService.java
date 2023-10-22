@@ -11,10 +11,9 @@ import java.util.Optional;
 public interface BoardService {
 
 
-
      // 게시글 생성
      Long createBoard(CreateBoardDto createBoardDto,  Optional<Member> memberOptional, Optional<Member> memberIdOptional);
-     Long updateBoard(Long boardId, CategoryEnum category, String updatedTitle, String updatedContents);
+     Long updateBoard(Long boardId, CategoryEnum category, String updatedTitle, String updatedContents, String UpBoardImageUrl);
 
      Board findOne(Long boardId);
 
