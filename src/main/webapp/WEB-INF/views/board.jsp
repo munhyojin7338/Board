@@ -128,7 +128,14 @@
 
 </head>
 <body>
-<h1>HealthBoard</h1>
+<div style="display: flex; align-items: center;">
+    <div id="logo" style="margin-right: 20px;">
+        <a href="/mainHome">
+            <img src="HealthBoard.png" alt="웹 로고" style="max-width: 100px; max-height: 100px;">
+        </a>
+    </div>
+    <h1>HealthBoard</h1>
+</div>
 <br><br>
 <div id="imageContainer"
      style="width: 100%; height: 300px; display: flex; justify-content: center; align-items: center; background-color: #eee;">
