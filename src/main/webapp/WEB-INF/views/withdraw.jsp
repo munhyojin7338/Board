@@ -56,12 +56,13 @@
     </style>
 
     <script>
+        const memberId = ${sessionScope.memberId};
+
         function confirmWithdraw() {
             const confirmMessage = "정말로 회원을 탈퇴하시겠습니까?";
 
             if (confirm(confirmMessage)) {
-                const Id = ${sessionScope.id}; // 세션에서 회원 ID 가져오기
-                const url = `/delete/user/${Id}`; // 회원 ID를 경로에 추가하여 URL 생성
+                const url = `/delete/user/${memberId}`;
 
                 fetch(url, {
                     method: 'DELETE'
@@ -70,7 +71,7 @@
                     .then(data => {
                         if (data.success) {
                             alert("회원이 탈퇴되었습니다.");
-                            window.location.href = "/home"; // 탈퇴 후 메인 페이지로 이동
+                            window.location.href = "/home";
                         } else {
                             alert("탈퇴에 실패했습니다. 관리자에게 문의하세요.");
                         }
