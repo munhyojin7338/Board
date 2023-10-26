@@ -33,7 +33,6 @@ dependencies {
 
     testImplementation 'org.assertj:assertj-core:3.24.2' // AssertJ 라이브러리 추가
 
-
     //spring security
     implementation 'org.springframework.boot:spring-boot-starter-security'
     // validation

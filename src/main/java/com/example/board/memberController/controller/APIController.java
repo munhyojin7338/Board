@@ -43,7 +43,7 @@ public class APIController {
     @GetMapping("/mainHome")
     public String conditionalHome(Model model, HttpSession session) {
 
-        // 세션에서 현재 사용자 정보 가져오기 (세션에 "currentUser" 또는 다른 이름으로 저장한 경우)
+        // 세션에서 현재 사용자 정보 가져오기
         Member member = (Member) session.getAttribute("sessionScope.nickName");
 
         // 모델에 사용자 정보 추가
@@ -54,9 +54,8 @@ public class APIController {
     // myPage 이동
     @GetMapping("/myPage")
     public String myPage(Model model, HttpSession session) {
-        // 세션에서 현재 사용자 정보 가져오기 (세션에 "currentUser" 또는 다른 이름으로 저장한 경우)
+        // 세션에서 현재 사용자 정보 가져오기
         Member member = (Member) session.getAttribute("sessionScope.nickName");
-
 
         // 모델에 사용자 정보 추가
         model.addAttribute("member", member);
@@ -97,7 +96,12 @@ public class APIController {
 
     // 회원탈퇴 페이지로 이동
     @GetMapping("/withdraw")
-    public String withdraw(){
+    public String withdraw(Model model, HttpSession session) {
+        // 세션에서 현재 사용자 정보 가져오기
+        Member member = (Member) session.getAttribute("sessionScope.nickName");
+
+        // 모델에 사용자 정보 추가
+        model.addAttribute("member", member);
         return "withdraw";
     }
 

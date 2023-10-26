@@ -47,8 +47,7 @@ public class MemberController {
 
     //  회원가입
     @PostMapping("/signup")
-    public String signup(@Valid MemberSignUpRequestDto signUpRequestDto
-            , @RequestParam("proFile") MultipartFile image) {
+    public String signup(@Valid MemberSignUpRequestDto signUpRequestDto) {
 
         boolean isEmailDuplicated = loginCheckService.checkEmail(signUpRequestDto.getEmail());
 
@@ -75,18 +74,7 @@ public class MemberController {
                 .build();
         memberRepository.save(member);
 
-        if (!image.isEmpty()) { // 이미지 파일이 비어있지 않다면 처리
-            try {
-                // 이미지 업로드 및 S3에 저장
-                String uniqueFileName = s3Service.upload(image);
-                // 저장된 이미지 URL을 회원 정보에 설정
-                member.setImageUrl(uniqueFileName);
-                memberRepository.save(member); // 회원 정보를 다시 저장하여 이미지 URL을 업데이트합니다.
-            } catch (IOException e) {
-                e.printStackTrace();
-                // 이미지 업로드 실패 시 처리
-            }
-        }
+
         System.out.println(member);
 
         return "redirect:/success";
@@ -214,7 +202,7 @@ public class MemberController {
     }
 
 
-    // myPage 이동 시
+    // profile 이미지 삭제 하는 로직
     @DeleteMapping("/delete/imageFile/{id}")
     public ResponseEntity<?> deleteFile(@PathVariable Long id) {
         Member member = memberRepository.findById(id)
@@ -232,6 +220,7 @@ public class MemberController {
         return ResponseEntity.ok().build();
     }
 
+    // 회원정보 삭제
     @DeleteMapping("/delete/user/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable Long id) {
         try {
