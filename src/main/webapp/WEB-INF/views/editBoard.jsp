@@ -72,7 +72,13 @@
 </head>
 <body>
 <div class="create-board-form">
-    <h1>Edit Board</h1>
+    <div style="display: flex; align-items: center;">
+        <div id="logo" style="margin-right: 20px;">
+            <a href="/mainHome">
+                <img src="https://boardbuket.s3.ap-northeast-2.amazonaws.com/logo/logo.png" alt="웹 로고" style="max-width: 100px; max-height: 100px;">        </a>
+        </div>
+        <h1>HealthBoard</h1>
+    </div>
 
     <div>
         <h2> ${sessionScope.nickName}님</h2>
