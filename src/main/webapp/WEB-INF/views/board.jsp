@@ -117,7 +117,7 @@
                 const proFile = document.getElementById("proFile");
                 if (imageContainer && proFile) {
                     imageContainer.style.backgroundColor = "#eee"; // 배경색 변경
-                    proFile.src = "https://boardbuket.s3.ap-northeast-2.amazonaws.com/blank-profile-picture-973460_1280.png";
+                    proFile.src = "https://boardbuket.s3.ap-northeast-2.amazonaws.com/proFile/profile.png";
                     proFile.alt = "대체 이미지";
                 }
             }
@@ -133,16 +133,14 @@
 <div style="display: flex; align-items: center;">
     <div id="logo" style="margin-right: 20px;">
         <a href="/mainHome">
-            <img src="../img/HealthBoard.png" alt="웹 로고" style="max-width: 100px; max-height: 100px;">        </a>
+            <img src="https://boardbuket.s3.ap-northeast-2.amazonaws.com/logo/logo.png" alt="웹 로고" style="max-width: 100px; max-height: 100px;">        </a>
     </div>
     <h1>HealthBoard</h1>
 </div>
 
 <br><br>
-<div id="imageContainer"
-     style="width: 100%; height: 300px; display: flex; justify-content: center; align-items: center; background-color: #eee;">
-    <img id="proFile" src="https://boardbuket.s3.ap-northeast-2.amazonaws.com/proFile/${member.imageUrl}" alt="프로필"
-         style="max-width: 100%; max-height: 100%;">
+<div id="imageContainer" style="width: 100%; height: 300px; display: flex; justify-content: center; align-items: center; background-color: #eee;">
+    <img id="proFile" src="https://boardbuket.s3.ap-northeast-2.amazonaws.com/proFile/profile.png" alt="프로필" style="max-width: 100%; max-height: 100%;">
 </div>
 <p1>${sessionScope.nickName}님!! 자유롭게 소통해보세요!</p1>
 <br>

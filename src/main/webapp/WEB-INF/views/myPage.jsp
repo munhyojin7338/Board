@@ -148,7 +148,7 @@
     <h1>HealthBoard</h1>
     <div class="user-info">
         <div id="imageContainer" style="width: 100%; height: 300px; display: flex; justify-content: center; align-items: center; background-color: #eee;">
-            <img id="proFile" src="https://boardbuket.s3.ap-northeast-2.amazonaws.com/proFile/${member.imageUrl}" alt="프로필" style="max-width: 100%; max-height: 100%;">
+            <img id="proFile" src="https://boardbuket.s3.ap-northeast-2.amazonaws.com/proFile/profile.png" alt="프로필" style="max-width: 100%; max-height: 100%;">
         </div>
         <h4 class="user-nickname">반갑습니다, ${sessionScope.nickName}님</h4>
     </div>
