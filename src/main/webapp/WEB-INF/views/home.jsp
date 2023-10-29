@@ -5,7 +5,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>home 화면</title>
+    <title>Health Board</title>
     <style>
         body {
             display: flex;

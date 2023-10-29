@@ -14,17 +14,33 @@
             background-color: #f0f0f0;
         }
 
-        .main-box {
+        .main-container {
             text-align: center;
-            padding: 100px;
-            border: 1px solid #ccc;
+            padding: 20px;
             background-color: #fff;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            width: 100%;
+            margin-top: 50px;
+            border-radius: 8px;
         }
 
-        .main-box h1 {
-            font-size: 28px;
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
             margin-bottom: 20px;
+        }
+
+        .logo img {
+            max-width: 100px;
+            max-height: 100px;
+        }
+
+        .main-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         .main-box h2 {
@@ -54,9 +70,8 @@
             justify-content: center;
             align-items: center;
             background-color: #eee;
+            margin-bottom: 20px;
         }
-
-
 
     </style>
 
@@ -81,7 +96,7 @@
                 const proFile = document.getElementById("proFile");
                 if (imageContainer && proFile) {
                     imageContainer.style.backgroundColor = "#eee"; // 배경색 변경
-                    proFile.src = "https://boardbuket.s3.ap-northeast-2.amazonaws.com/blank-profile-picture-973460_1280.png";
+                    proFile.src = "https://boardbuket.s3.ap-northeast-2.amazonaws.com/proFile/profile.png";
                     proFile.alt = "대체 이미지";
                 }
             }
@@ -91,18 +106,27 @@
 
 </head>
 <body>
-<div class="main-box">
-    <h1>HealthBoard</h1>
-    <br><br>
-    <div id="imageContainer" style="width: 100%; height: 300px; display: flex; justify-content: center; align-items: center; background-color: #eee;">
-        <img id="proFile" src="https://boardbuket.s3.ap-northeast-2.amazonaws.com/proFile/${member.imageUrl}" alt="프로필" style="max-width: 100%; max-height: 100%;">
+<div class="main-container">
+    <div class="logo">
+        <a href="/mainHome">
+            <img src="https://boardbuket.s3.ap-northeast-2.amazonaws.com/logo/logo.png" alt="웹 로고">
+        </a>
+        <h1>HealthBoard</h1>
     </div>
-    <h2>반갑습니다, ${sessionScope.nickName}님</h2>
-    <br>
+    <div class="main-box">
 
-    <a href="logout">logout</a>
-    <a href="board">Board</a>
-    <a href="myPage">myPage</a>
-</div>
+        <br><br>
+        <div id="imageContainer"
+             style="width: 100%; height: 300px; display: flex; justify-content: center; align-items: center; background-color: #eee;">
+            <img id="proFile" src="https://boardbuket.s3.ap-northeast-2.amazonaws.com/proFile/profile.png" alt="프로필"
+                 style="max-width: 100%; max-height: 100%;">
+        </div>
+        <h2>반갑습니다, ${sessionScope.nickName}님</h2>
+        <br>
+
+        <a href="logout">logout</a>
+        <a href="board">Board</a>
+        <a href="myPage">myPage</a>
+    </div>
 </body>
 </html>
