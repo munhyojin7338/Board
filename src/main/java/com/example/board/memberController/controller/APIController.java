@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import javax.servlet.http.HttpSession;
 
@@ -14,6 +15,8 @@ import javax.servlet.http.HttpSession;
 @Controller
 @Slf4j
 public class APIController {
+
+
 
     // 메인 화면 표시
     @GetMapping("/")
@@ -41,13 +44,14 @@ public class APIController {
 
     // 로그인 성공하여 나온 mainPage
     @GetMapping("/mainHome")
-    public String conditionalHome(Model model, HttpSession session) {
+    public String mainHome(Model model, HttpSession session) {
 
         // 세션에서 현재 사용자 정보 가져오기
         Member member = (Member) session.getAttribute("sessionScope.nickName");
 
         // 모델에 사용자 정보 추가
         model.addAttribute("member", member);
+
         return "mainHome";
     }
 
@@ -82,10 +86,18 @@ public class APIController {
         return "nickNameFail";
     }
 
-    //updateNickName 페이지이동
-    @GetMapping("/updateNickName")
-    public String updateNickName() {
-        return "updateNickName";
+
+
+    @GetMapping("/editNickName")
+    public String editNickNamePage(Model model, HttpSession session) {
+
+        // 세션에서 현재 사용자 정보 가져오기
+        Member member = (Member) session.getAttribute("sessionScope.nickName");
+
+        // 모델에 사용자 정보 추가
+        model.addAttribute("member", member);
+
+        return "editNickName";
     }
 
     //updatePassword
