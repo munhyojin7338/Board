@@ -143,12 +143,13 @@
         </div>
         <br><br>
         <div class="action-links">
-            <a href="updateNickName">닉네임 수정</a>
+            <a href="/editNickName">닉네임 수정</a>
             <a href="/updatePassword">비밀번호 수정</a>
             <a href="/mainHome">메인 홈으로</a>
             <a href="/logout">로그아웃</a>
             <a href="/withdraw">회원탈퇴</a>
         </div>
+
 
         <form action="/upload" method="POST" enctype="multipart/form-data" class="image-upload">
             <label for="image">이미지 업로드:</label>

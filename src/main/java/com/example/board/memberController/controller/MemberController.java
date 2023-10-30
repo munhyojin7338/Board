@@ -145,20 +145,32 @@ public class MemberController {
     }
 
 
-    // myPage 닉네임 수정
-    @RequestMapping(value = "/updateNickName/{id}", method = {RequestMethod.PUT, RequestMethod.POST})
-    public ResponseEntity<Member> updateMemberNickName(
-            @PathVariable Long id,
-            @RequestBody @Valid MemberUpdateNickNameDto updateDto) {
+    // editNickName 닉네임 수정
+    @PostMapping("/editNickName/{id}")
+    public String editNickName(@PathVariable Long id
+            , @ModelAttribute MemberUpdateNickNameDto updateDto)  {
+        try {
+            Member member = memberRepository.findById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("해당 회원을 찾을 수 없습니다."));
 
-        Member updateMemberNickName = memberService.updateMemberNickName(id, updateDto);
+            member.setNickName(updateDto.getUpdateNickName());
+            member.setUpdateDate(LocalDateTime.now());
 
-        return ResponseEntity.status(HttpStatus.OK).body(updateMemberNickName);
+            System.out.println("member" + member);
+
+            memberRepository.save(member);
+
+            // 성공적으로 업데이트되었음을 나타내는 메시지를 반환
+            return "redirect:/myPage";
+        } catch (Exception e) {
+            e.printStackTrace();
+            // 업데이트에 실패한 경우 에러 메시지를 반환
+            return "redirect:/mainHome";
+        }
     }
 
-
     //myPage password 수정
-    @RequestMapping(value = "/updatePassword/{id}", method = {RequestMethod.PUT, RequestMethod.POST})
+    @PostMapping("/updatePassword/{id}")
     public ResponseEntity<Member> updatePassword(@PathVariable Long id,
                                                  @RequestBody @Valid MemberUpdatePasswordDto memberUpdatePasswordDto) {
 

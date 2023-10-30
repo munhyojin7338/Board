@@ -12,7 +12,10 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 
+import javax.validation.Valid;
 import java.time.LocalDateTime;
 
 @Service
@@ -41,19 +44,7 @@ public class MemberService {
     }
 
     @Transactional
-    public Member updateMemberNickName(Long id, MemberUpdateNickNameDto updateDto) {
-        Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 회원을 찾을 수 없습니다."));
-
-        // 닉네임 업데이트
-        member.setNickName(updateDto.getUpdateNickName());
-        member.setUpdateDate(LocalDateTime.now());
-        // 업데이트된 회원 저장
-        return memberRepository.save(member);
-    }
-
-    @Transactional
-    public Member updatePassword(Long id, MemberUpdatePasswordDto updateDto) {
+    public Member updatePassword(@PathVariable Long id,  @RequestBody @Valid MemberUpdatePasswordDto updateDto) {
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 회원을 찾을 수 없습니다."));
 

@@ -56,6 +56,7 @@ public class BoardServiceImpl implements BoardService {
         }
     }
 
+    // 게시글 수정
     @Override
     @Transactional
     public Long updateBoard(Long boardId, CategoryEnum category, String updatedTitle, String updatedContents, String UpBoardImageUrl) {
