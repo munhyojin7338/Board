@@ -71,7 +71,7 @@
                     .then(data => {
                         if (data.success) {
                             alert("회원이 탈퇴되었습니다.");
-                            window.location.href = "/home";
+                            window.location.href = "home";
                         } else {
                             alert("탈퇴에 실패했습니다. 관리자에게 문의하세요.");
                         }

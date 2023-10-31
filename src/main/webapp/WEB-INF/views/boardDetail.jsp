@@ -210,7 +210,7 @@
         </form>
 
         <div id="imageContainer" style="width: 100%; height: 300px; display: flex; justify-content: center; align-items: center; background-color: #eee;">
-            <img id="boardImage" src="https://boardbuket.s3.ap-northeast-2.amazonaws.com/23%EB%85%84%EB%8F%84+%EB%B4%84.PNG" alt="게시글 이미지" style="max-width: 100%; max-height: 100%;">
+            <img id="boardImage" src="https://boardbuket.s3.ap-northeast-2.amazonaws.com/${board.getBoardImageUrl()}" alt="게시글 이미지" style="max-width: 100%; max-height: 100%;">
         </div>
     </div>
 
