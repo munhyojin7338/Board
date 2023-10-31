@@ -78,18 +78,28 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function () {
+            // 이미지 URL을 가져와서 로그에 출력
+            console.log("프로필 이미지 URL: " + "${member.getImageUrl()}");
+
+            //프로필 이미지 URL 확인
             const imageUrl = "${member.getImageUrl()}";
-            if (imageUrl === "" || imageUrl === null) {
-                const imageContainer = document.getElementById("imageContainer");
-                const proFile = document.getElementById("proFile");
-                if (imageContainer && proFile) {
-                    imageContainer.style.backgroundColor = "#eee";
-                    proFile.src = "https://boardbuket.s3.ap-northeast-2.amazonaws.com/proFile/profile.png";
-                    proFile.alt = "대체 이미지";
-                }
+            if (imageUrl === "" || imageUrl === "null") {
+                // 이미지가 없는 경우 대체 이미지로 교체
+                document.getElementById("imageContainer").style.backgroundColor = "#eee"; // 배경색 변경
+                document.getElementById("proFile").src = "https://boardbuket.s3.ap-northeast-2.amazonaws.com/proFile/profile.png";
+                document.getElementById("proFile").alt = "대체 이미지";
             }
         });
+
     </script>
+
+    <script>
+        $(document).ready(function () {
+            // 이미지 URL을 가져와서 로그에 출력
+            console.log("프로필 이미지 URL: " + "${member.getImageUrl()}");
+        });
+    </script>
+
 
 </head>
 <body>
@@ -102,7 +112,7 @@
     </div>
     <div class="main-box">
         <div id="imageContainer">
-            <img id="proFile" src="https://boardbuket.s3.ap-northeast-2.amazonaws.com/proFile/profile.png" alt="프로필" style="max-width: 100%; max-height: 100%;">
+            <img id="proFile" src="https://boardbuket.s3.ap-northeast-2.amazonaws.com/${member.getImageUrl()}" alt="프로필" style="max-width: 100%; max-height: 100%;">
         </div>
         <h2>반갑습니다, ${sessionScope.nickName}님</h2>
 
