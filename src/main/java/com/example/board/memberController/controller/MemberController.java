@@ -12,7 +12,6 @@ import com.example.board.memberController.memberService.LoginCheckService;
 import com.example.board.memberController.memberService.MemberService;
 import com.example.board.memberController.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -34,7 +33,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@Slf4j
+/*
+ lombok을  RequiredArgsConstructor 사용하여 memberRepository 등 주입 받을 수 있다
+ */
+
 @Controller
 @RequiredArgsConstructor
 public class MemberController {
@@ -61,7 +63,6 @@ public class MemberController {
 
         if (isNickNameDuplicated) {
             // 중복된 닉네임 존재하므로 회원가입을 막음
-
             return "redirect:/nickNameFail";
         }
 
@@ -73,9 +74,6 @@ public class MemberController {
                 .localDateTime(LocalDateTime.now())
                 .build();
         memberRepository.save(member);
-
-
-        System.out.println(member);
 
         return "redirect:/success";
     }

@@ -20,13 +20,19 @@ import java.util.stream.Collectors;
 게시판 글쓰기, 댓글, 높은 조회수, 이미지파일 올리기
  */
 
+/*
+ 기술 사용:
+ JPA (entity, Id, GeneratedValue)  , 상속(implements), mySQL,
+ lombok을 이용한 setter/getter, @Builder, @NoArgsConstructor, @AllArgsConstructor
+ */
+
 @Setter
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Member  implements UserDetails {
+public class Member implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
