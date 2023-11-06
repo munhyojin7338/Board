@@ -71,14 +71,17 @@ public class Member implements UserDetails {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
+    @Builder.Default
     private List<Board> boardList = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     @JsonIgnore
+    @Builder.Default
     private List<Comment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
+    @Builder.Default
     private List<Reaction> reactions = new ArrayList<>();
 
 
