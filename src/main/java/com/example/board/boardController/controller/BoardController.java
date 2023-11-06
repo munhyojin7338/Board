@@ -107,6 +107,7 @@ public class BoardController {
     // 게시글 삭제
     @DeleteMapping("/board/{boardId}")
     public String deleteBoard(@PathVariable Long boardId) {
+
         boardService.deleteBoard(boardId);
         return "redirect:/board";
     }
@@ -119,8 +120,7 @@ public class BoardController {
         String boardFileName = s3Service.upload(image);
 
         System.out.println("2");
-        Board board = new Board(); // 이 부분은 새로운 게시글을 생성하거나 업데이트할 게시글을 가져오는 코드로 변경 가능
-        // 게시글 정보를 가져오거나 생성하는 코드 (board)
+        Board board = new Board();
 
         System.out.println("3");
         board.setBoardImageUrl(boardFileName);

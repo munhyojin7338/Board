@@ -80,14 +80,12 @@ public class MemberController {
 
     // 로그인
     @PostMapping("/login")
-    public ModelAndView login(@Valid MemberLoginRequestDto memberLoginRequestDto
-            , Errors errors
-            , HttpServletResponse response
-            , HttpServletRequest request) {
+    public ModelAndView login(@Valid MemberLoginRequestDto memberLoginRequestDto, Errors errors,
+                              HttpServletResponse response, HttpServletRequest request) {
         List<ResponseError> responseErrorList = new ArrayList<>();
 
         if (errors.hasErrors()) {
-            errors.getAllErrors().forEach((e) -> responseErrorList.add(ResponseError.of((FieldError) e)));
+            errors.getAllErrors().forEach(error -> responseErrorList.add(ResponseError.of((FieldError) error)));
             return new ModelAndView("emailFail", HttpStatus.BAD_REQUEST)
                     .addObject("errors", responseErrorList);
         }
@@ -95,40 +93,45 @@ public class MemberController {
         Optional<Member> optionalMember = memberRepository.findByEmail(memberLoginRequestDto.getEmail());
 
         if (optionalMember.isEmpty()) {
-            ModelAndView modelAndView = new ModelAndView("login");
-            modelAndView.addObject("errorMessage", "가입되지 않은 E-MAIL 입니다.");
-            return modelAndView;
+            return new ModelAndView("login")
+                    .addObject("errorMessage", "가입되지 않은 E-MAIL 입니다.");
         }
 
         Member member = optionalMember.get();
-
         if (!memberLoginRequestDto.getPassword().equals(member.getPassword())) {
-            ModelAndView modelAndView = new ModelAndView("login");
-            modelAndView.addObject("errorMessage", "비밀번호가 틀렸습니다, 다시 확인해주세요!");
-            return modelAndView;
+            return new ModelAndView("login")
+                    .addObject("errorMessage", "비밀번호가 틀렸습니다, 다시 확인해주세요!");
         }
 
         TokenInfo tokenInfo = memberService.login(member.getEmail(), member.getPassword());
 
-        // JWT 토큰을 쿠키에 저장
-        Cookie jwtCookie = new Cookie("jwtToken", tokenInfo.getAccessToken());
-        Cookie idCookie = new Cookie("myId", member.getId().toString());
+        addTokenToCookies(response, tokenInfo);
+        addUserInfoToSession(request, member);
 
-        jwtCookie.setPath("/");
+        return new ModelAndView(new RedirectView("/mainHome"));
+    }
+
+    private void addTokenToCookies(HttpServletResponse response, TokenInfo tokenInfo) {
+        Cookie jwtCookie = new Cookie("jwtToken", tokenInfo.getAccessToken());
+        Cookie idCookie = new Cookie("myId", tokenInfo.getAccessToken());
+
+        setCookiePath(jwtCookie);
+        setCookiePath(idCookie);
+
         response.addCookie(jwtCookie);
         response.addCookie(idCookie);
+    }
 
+    private void setCookiePath(Cookie cookie) {
+        cookie.setPath("/");
+    }
 
-        // 세션에 사용자 닉네임 저장
+    private void addUserInfoToSession(HttpServletRequest request, Member member) {
         HttpSession session = request.getSession();
         session.setAttribute("nickName", member.getNickName());
         session.setAttribute("memberId", member.getId());
         session.setAttribute("kakaoId", member.getKakaoId());
-
-        return new ModelAndView(new RedirectView("/mainHome"));
-
     }
-
 
     // 회원가입 시 nickName 증복 검사
     @GetMapping("/check/nickName/{nickName}")

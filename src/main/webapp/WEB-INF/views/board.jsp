@@ -153,6 +153,7 @@
         <th>제목</th>
         <th>내용</th>
         <th>조회수</th>
+        <th>삭제</th>
     </tr>
     </thead>
     <tbody>
@@ -164,6 +165,14 @@
             <td><a href="/board/${board.id}">${board.title}</a></td>
             <td>${board.contents}</td>
             <td>${board.views}</td>
+            <td>
+                <c:if test="${sessionScope.nickName eq board.member.nickName}">
+                    <form action="/board/${board.id}" method="post">
+                        <input type="hidden" name="_method" value="delete">
+                        <button type="submit">삭제하기</button>
+                    </form>
+                </c:if>
+            </td>
         </tr>
     </c:forEach>
     </tbody>

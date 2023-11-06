@@ -12,7 +12,11 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
+/*
+JPA(@Entity, @Id, @GeneratedValue)
+, lombok(@Getter, @Setter, @NoArgsConstructor)
+,  mySQL
+ */
 @Entity
 @Getter
 @Setter
@@ -39,6 +43,7 @@ public class Board {
     @Column
     private String boardImageUrl; // 게시판 이미지 업로드 로직
 
+    @Column
     private LocalDateTime createDate; // 생성날짜
 
     private LocalDateTime updateDate; // 수정날짜

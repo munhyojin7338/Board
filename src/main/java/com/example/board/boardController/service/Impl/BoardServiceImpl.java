@@ -85,13 +85,6 @@ public class BoardServiceImpl implements BoardService {
         return true;
     }
 
-    @Override
-    public Board findOne(Long boardId) {
-
-        return boardRepository.findById(boardId)
-                .orElseThrow(() -> new RuntimeException("게시물을 찾을 수 없습니다."));
-    }
-
 
 
     // 조회수를 올리는 작업

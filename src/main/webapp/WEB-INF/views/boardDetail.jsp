@@ -198,7 +198,6 @@
 
     <c:if test="${board.member != null && board.member.nickName != null && board.member.nickName eq nickName}">
         <a href="/board/${board.id}/edit">수정하기</a>
-        <button onclick="showConfirmation()">삭제하기</button>
     </c:if>
 
     <div class="comment-container">
@@ -234,11 +233,7 @@
                     <td>${comment.member.nickName}</td>
                     <td>${comment.content}</td>
                     <td>${createdAt}</td>
-                    <td>
-                        <c:if test="${sessionScope.member.nickName == comment.member.nickName}">
-                            <button onclick="deleteComment('${boardId}', '${comment.id}')">삭제하기</button>
-                        </c:if>
-                    </td>
+
                 </tr>
             </c:forEach>
             </tbody>

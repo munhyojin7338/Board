@@ -15,7 +15,6 @@ public interface BoardService {
      Long createBoard(CreateBoardDto createBoardDto,  Optional<Member> memberOptional, Optional<Member> memberIdOptional);
      Long updateBoard(Long boardId, CategoryEnum category, String updatedTitle, String updatedContents, String UpBoardImageUrl);
 
-     Board findOne(Long boardId);
 
      boolean deleteBoard(Long boardId); // 게시글 삭제
 
