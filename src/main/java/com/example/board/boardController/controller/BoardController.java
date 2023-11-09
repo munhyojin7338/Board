@@ -20,6 +20,11 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.util.Optional;
 
+/*
+ JPA
+ ,REST API(POST, GET, DELETE)
+ ,AWS S3
+ */
 @Controller
 @RequiredArgsConstructor
 public class BoardController {

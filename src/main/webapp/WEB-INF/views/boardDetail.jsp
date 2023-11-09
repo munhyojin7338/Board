@@ -189,7 +189,7 @@
 <div class="board-container">
     <h1 class="title">${board.title}
         <div id="logo" style="margin-right: 20px;">
-            <a href="/mainHome">
+            <a href="/board">
                 <img src="https://boardbuket.s3.ap-northeast-2.amazonaws.com/logo/logo.png" alt="웹 로고" style="max-width: 100px; max-height: 100px;">        </a>
         </div>
     </h1>
