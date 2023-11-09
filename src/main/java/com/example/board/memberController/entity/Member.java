@@ -22,8 +22,14 @@ import java.util.stream.Collectors;
 
 /*
  기술 사용:
- JPA (entity, Id, GeneratedValue)  , 상속(implements), mySQL,
- lombok을 이용한 setter/getter, @Builder, @NoArgsConstructor, @AllArgsConstructor
+ JPA (entity, Id, GeneratedValue)
+ @OneToMany, @Entity
+ 상속(implements),
+ mySQL,
+ lombok
+ setter/getter,
+ @Builder,
+ @NoArgsConstructor, @AllArgsConstructor
  */
 
 @Setter

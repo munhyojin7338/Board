@@ -6,6 +6,15 @@ import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+ /*
+   lombok
+   @Getter ,@Setter
+   @NoArgsConstructor ,@AllArgsConstructor
+   @Builder
+   JPA
+   @Entity, @Table(name = "comment"), @ManyToOne
+   mySQL
+  */
 @Entity
 @Getter
 @Setter

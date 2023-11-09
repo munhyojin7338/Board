@@ -34,7 +34,7 @@ import java.util.List;
 import java.util.Optional;
 
 /*
- lombok을  RequiredArgsConstructor 사용하여 memberRepository 등 주입 받을 수 있다
+ lombok RequiredArgsConstructor 사용하여 memberRepository 등 주입 받을 수 있다
  */
 
 @Controller

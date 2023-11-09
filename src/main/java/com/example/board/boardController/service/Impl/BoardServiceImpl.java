@@ -7,6 +7,10 @@ import com.example.board.boardController.repository.BoardRepository;
 import com.example.board.boardController.service.BoardService;
 import com.example.board.memberController.entity.Member;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +18,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+ /*
+    JPA
+    @Transactional(readOnly = true) : 조회용 메서드에 대해서는 @Transactional(readOnly = true) 를 설정함으로써
+    성능상 이점을 얻을 수 있다
+
+  */
 
 @Service
 @Transactional(readOnly = true)
@@ -21,12 +31,11 @@ import java.util.Optional;
 public class BoardServiceImpl implements BoardService {
 
     private final BoardRepository boardRepository;
-    @Override
-    @Transactional
-    public List<Board> getAllBoards() {
-        return boardRepository.findAll();
-    }
 
+
+    /*
+    조회수 증가 , 게시물 수정을 위한 로직
+     */
     @Override
     @Transactional
     public Board getBoardById(Long boardId) {
@@ -72,6 +81,9 @@ public class BoardServiceImpl implements BoardService {
         return board.getId();
     }
 
+    /*
+    게시글 삭제
+     */
     @Override
     @Transactional
     public boolean deleteBoard(Long boardId) {
@@ -87,13 +99,17 @@ public class BoardServiceImpl implements BoardService {
 
 
 
-    // 조회수를 올리는 작업
+    // 조회수 증가
     @Override
     @Transactional
     public Board saveBoard(Board board) {
         return boardRepository.save(board);
     }
 
+    /*
+    높은 조회수가 가장 위에 있게 하는 작업
+    페이징 처리 하기
+     */
     // 높은 조회수가 가장 위에 있게 하는 작업
     @Override
     public List<Board> getBoardsOrderByViewsDesc() {

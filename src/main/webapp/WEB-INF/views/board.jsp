@@ -177,6 +177,7 @@
     </c:forEach>
     </tbody>
 </table>
+
 <button onclick="goToCreateBoardPage()">게시글 작성</button>
 </body>
 </html>

@@ -13,9 +13,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 /*
-JPA(@Entity, @Id, @GeneratedValue)
-, lombok(@Getter, @Setter, @NoArgsConstructor)
-,  mySQL
+ JPA(@Entity, @Id, @GeneratedValue)
+,lombok(@Getter, @Setter, @NoArgsConstructor)
+,mySQL
  */
 @Entity
 @Getter

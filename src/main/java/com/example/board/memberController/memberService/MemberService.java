@@ -1,6 +1,5 @@
 package com.example.board.memberController.memberService;
 
-import com.example.board.memberController.dto.MemberUpdateNickNameDto;
 import com.example.board.memberController.dto.MemberUpdatePasswordDto;
 import com.example.board.memberController.entity.Member;
 import com.example.board.memberController.jwt.JwtTokenProvider;
@@ -17,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
+
+
 
 @Service
 @Transactional(readOnly = true)

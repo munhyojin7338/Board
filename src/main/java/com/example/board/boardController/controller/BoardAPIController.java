@@ -7,10 +7,12 @@ import com.example.board.boardController.entity.Board;
 import com.example.board.boardController.entity.CategoryEnum;
 import com.example.board.boardController.service.BoardService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
@@ -20,8 +22,6 @@ import java.util.List;
 public class BoardAPIController {
 
     private final BoardService boardService;
-
-
 
     // 게시판 메인 페이지
     @GetMapping("/board")
