@@ -4,7 +4,6 @@ import com.example.board.boardController.dto.CreateBoardDto;
 import com.example.board.boardController.entity.Board;
 import com.example.board.boardController.entity.CategoryEnum;
 import com.example.board.memberController.entity.Member;
-import org.springframework.data.domain.Page;
 
 import java.util.List;
 import java.util.Optional;
