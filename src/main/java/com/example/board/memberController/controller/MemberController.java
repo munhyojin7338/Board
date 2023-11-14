@@ -80,8 +80,10 @@ public class MemberController {
 
     // 로그인
     @PostMapping("/login")
-    public ModelAndView login(@Valid MemberLoginRequestDto memberLoginRequestDto, Errors errors,
-                              HttpServletResponse response, HttpServletRequest request) {
+    public ModelAndView login(@Valid MemberLoginRequestDto memberLoginRequestDto
+            , Errors errors
+            , HttpServletResponse response
+            , HttpServletRequest request) {
         List<ResponseError> responseErrorList = new ArrayList<>();
 
         if (errors.hasErrors()) {
@@ -90,16 +92,23 @@ public class MemberController {
                     .addObject("errors", responseErrorList);
         }
 
+        else if (errors.hasErrors()) {
+            errors.getAllErrors().forEach(error -> responseErrorList.add(ResponseError.of((FieldError) error)));
+            return new ModelAndView("passwordFail", HttpStatus.BAD_REQUEST)
+                    .addObject("errors", responseErrorList);
+        }
+
         Optional<Member> optionalMember = memberRepository.findByEmail(memberLoginRequestDto.getEmail());
 
         if (optionalMember.isEmpty()) {
-            return new ModelAndView("login")
+            return new ModelAndView("emailFail")
                     .addObject("errorMessage", "가입되지 않은 E-MAIL 입니다.");
         }
 
         Member member = optionalMember.get();
+
         if (!memberLoginRequestDto.getPassword().equals(member.getPassword())) {
-            return new ModelAndView("login")
+            return new ModelAndView("passwordFail")
                     .addObject("errorMessage", "비밀번호가 틀렸습니다, 다시 확인해주세요!");
         }
 
@@ -149,7 +158,7 @@ public class MemberController {
     // editNickName 닉네임 수정
     @PostMapping("/editNickName/{id}")
     public String editNickName(@PathVariable Long id
-            , @ModelAttribute MemberUpdateNickNameDto updateDto)  {
+            , @ModelAttribute MemberUpdateNickNameDto updateDto) {
         try {
             Member member = memberRepository.findById(id)
                     .orElseThrow(() -> new IllegalArgumentException("해당 회원을 찾을 수 없습니다."));
