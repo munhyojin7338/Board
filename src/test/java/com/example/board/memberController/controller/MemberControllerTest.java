@@ -7,6 +7,7 @@ import com.example.board.memberController.jwt.TokenInfo;
 import com.example.board.memberController.memberService.MemberService;
 import com.example.board.memberController.repository.MemberRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -63,6 +64,7 @@ class MemberControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @DisplayName("회원가입 테스트")
     @Test
     void signupTest() throws Exception {
         //Given
@@ -81,7 +83,6 @@ class MemberControllerTest {
 
         //Then
         // 데이터베이스에서 실제로 회원이 생성되었는지 확인
-        //Then
         int status = mvcResult.getResponse().getStatus();
         if (status == 200 || status == 201) { // 성공적인 상태 코드 (200 OK, 201 Created 등)
             // 데이터베이스에서 실제로 회원이 생성되었는지 확인
@@ -97,6 +98,7 @@ class MemberControllerTest {
         }
     }
 
+    @DisplayName("로그인 테스트")
     @Test
     void loginTest() throws Exception {
         MockitoAnnotations.openMocks(this);

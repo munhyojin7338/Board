@@ -57,11 +57,11 @@ public class BoardServiceImpl implements BoardService {
         } else if (memberIdOptional.isPresent()) {
             Member member = memberIdOptional.get();
             Board board = new Board();
-            board.createBoard(member, createBoardDto.getCategoryEnum(), createBoardDto.getTitle(), createBoardDto.getContents(),  createBoardDto.getBoardImageUrl());
+            board.createBoard(member, createBoardDto.getCategoryEnum(), createBoardDto.getTitle(), createBoardDto.getContents(), createBoardDto.getBoardImageUrl());
             boardRepository.save(board);
             return board.getId();
         } else {
-            return null; // 또는 예외를 던지거나 다른 처리 방식을 선택
+            throw new IllegalArgumentException("찾을 수 없는 member 입니다.");
         }
     }
 
