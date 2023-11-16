@@ -7,10 +7,6 @@ import com.example.board.boardController.repository.BoardRepository;
 import com.example.board.boardController.service.BoardService;
 import com.example.board.memberController.entity.Member;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -68,17 +64,24 @@ public class BoardServiceImpl implements BoardService {
     // 게시글 수정
     @Override
     @Transactional
-    public Long updateBoard(Long boardId, CategoryEnum category, String updatedTitle, String updatedContents, String UpBoardImageUrl) {
-        Board board = boardRepository.findById(boardId)
-                .orElseThrow(() -> new RuntimeException("해당 게시물을 찾을 수 없습니다."));
+    public Long updateBoard(Long boardId, CategoryEnum category, String updatedTitle, String updatedContents, String upBoardImageUrl) {
+        Optional<Board> optionalBoard = boardRepository.findById(boardId);
 
-        board.setCategory(category);
-        board.setTitle(updatedTitle);
-        board.setContents(updatedContents);
-        board.setBoardImageUrl(UpBoardImageUrl);
-        board.setUpdateDate(LocalDateTime.now());
+        if (optionalBoard.isPresent()) {
+            Board board = optionalBoard.get();
+            board.setCategory(category);
+            board.setTitle(updatedTitle);
+            board.setContents(updatedContents);
+            board.setBoardImageUrl(upBoardImageUrl);
+            board.setUpdateDate(LocalDateTime.now());
 
-        return board.getId();
+            return board.getId();
+        } else {
+            // 게시물을 찾을 수 없는 경우, 예외를 던지지 않고 다른 처리를 할 수 있습니다.
+            // 예를 들어, 로깅하거나 기본값을 반환하거나 특정 응답을 생성할 수 있습니다.
+            // 여기서는 null을 반환하도록 수정하였습니다.
+            return null;
+        }
     }
 
     /*
