@@ -16,8 +16,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import static org.hamcrest.core.StringContains.containsString;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
@@ -106,18 +106,9 @@ class BoardControllerTest {
                 // Then 테스트 결과 검증
                 .andExpect(status().is3xxRedirection()) // 3xx 리다이렉션 상태 확인
                 .andExpect(redirectedUrl("/board")) // 리다이렉트된 URL이 "/board"인지 확인
-                .andExpect(result -> {
-                    String responseBody = mockMvc.perform(get("/board"))
-                            .andReturn().getResponse().getContentAsString();
-
-                    System.out.println("Response Body: " + responseBody);
-
-                    mockMvc.perform(get("/board")
-                                    .content(responseBody))
-                            .andExpect(content().string(containsString("게시물을 찾을 수 없습니다.")));
-                });
+                .andExpect(flash().attributeExists("message")) // Flash 속성 "message"가 존재하는지 확인
+                .andExpect(flash().attribute("message", "게시물을 찾을 수 없습니다.")); // Flash 속성 "message"의 값이 예상 값과 일치하는지 확인
     }
-
 
 
     @Test
@@ -130,7 +121,7 @@ class BoardControllerTest {
         mockMvc.perform(delete("/board/{boardId}", existingBoardId))
 
                 // Then 테스트 결과 검증
-                .andExpect(status().isOk()) // 예상되는 응답 상태 코드는 200 (OK)
+                .andExpect(status().isFound()) // 예상되는 응답 상태 코드는 302 (Found)
                 .andExpect(redirectedUrl("/board")); // 삭제 후 리다이렉트되는 URL 확인
     }
 
