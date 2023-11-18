@@ -16,7 +16,7 @@ public interface BoardService {
      Long updateBoard(Long boardId, CategoryEnum category, String updatedTitle, String updatedContents, String UpBoardImageUrl);
 
 
-     Optional<Boolean> deleteBoard(Long boardId); // 게시글 삭제
+     boolean deleteBoard(Long boardId); // 게시글 삭제
 
 
      Board getBoardById(Long boardId); // 게시물 ID로 게시물을 가져오는 메서드

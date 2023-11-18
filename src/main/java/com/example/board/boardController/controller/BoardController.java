@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -111,9 +112,15 @@ public class BoardController {
 
     // 게시글 삭제
     @DeleteMapping("/board/{boardId}")
-    public String deleteBoard(@PathVariable Long boardId) {
+    public String deleteBoard(@PathVariable Long boardId, RedirectAttributes redirectAttributes) {
+        boolean isDeleted = boardService.deleteBoard(boardId);
 
-        boardService.deleteBoard(boardId);
+        if (isDeleted) {
+            redirectAttributes.addFlashAttribute("message", "게시물이 성공적으로 삭제되었습니다.");
+        } else {
+            redirectAttributes.addFlashAttribute("message", "게시물을 찾을 수 없습니다.");
+        }
+
         return "redirect:/board";
     }
 

@@ -86,10 +86,10 @@ public class BoardServiceImpl implements BoardService {
 
     /*
     게시글 삭제
-     */
+    */
     @Override
     @Transactional
-    public Optional<Boolean> deleteBoard(Long boardId) {
+    public boolean deleteBoard(Long boardId) {
         Optional<Board> optionalBoard = boardRepository.findById(boardId);
 
         if (optionalBoard.isPresent()) {
@@ -98,13 +98,11 @@ public class BoardServiceImpl implements BoardService {
             board.getMember().getBoardList().removeIf(targetBoard -> targetBoard.equals(board));
 
             boardRepository.deleteById(boardId);
-            return Optional.of(Boolean.TRUE);
+            return true;  // 삭제 성공
         } else {
-            return Optional.empty();
+            return false; // 삭제 실패
         }
     }
-
-
 
     // 조회수 증가
     @Override
