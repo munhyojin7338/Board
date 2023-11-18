@@ -89,15 +89,19 @@ public class BoardServiceImpl implements BoardService {
      */
     @Override
     @Transactional
-    public boolean deleteBoard(Long boardId) {
-        Board board = boardRepository.findById(boardId)
-                .orElseThrow(() -> new RuntimeException("게시물을 찾을 수 없습니다."));
+    public Optional<Boolean> deleteBoard(Long boardId) {
+        Optional<Board> optionalBoard = boardRepository.findById(boardId);
 
-        board.getMember().getBoardList().removeIf(targetBoard -> targetBoard.equals(board));
+        if (optionalBoard.isPresent()) {
+            Board board = optionalBoard.get();
 
+            board.getMember().getBoardList().removeIf(targetBoard -> targetBoard.equals(board));
 
-        boardRepository.deleteById(boardId);
-        return true;
+            boardRepository.deleteById(boardId);
+            return Optional.of(Boolean.TRUE);
+        } else {
+            return Optional.empty();
+        }
     }
 
 
