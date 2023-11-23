@@ -1,7 +1,6 @@
 package com.example.board.boardController.entity;
 
 import com.example.board.memberController.entity.Member;
-import com.example.board.memberController.entity.Reaction;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
@@ -71,10 +70,6 @@ public class Board {
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
     @JsonIgnoreProperties("board")  // 순환 참조를 방지하기 위해 추가
     private List<Comment> comments = new ArrayList<>();
-
-    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnoreProperties("board")
-    private List<Reaction> reactions = new ArrayList<>();
 
 
     public void createBoard(Member member, CategoryEnum category, String title, String contents, String boardImageUrl) {
